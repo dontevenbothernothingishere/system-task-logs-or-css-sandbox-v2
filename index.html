@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM ACCESS: REQUIRED</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #1d9bf0;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .contract-box {
+            width: 80%;
+            max-width: 600px;
+            border: 1px solid #333;
+            padding: 40px;
+            background: linear-gradient(145deg, #050505, #000);
+            box-shadow: 0 0 30px rgba(29, 155, 240, 0.1);
+            text-align: center;
+        }
+
+        h1 { letter-spacing: 5px; color: #fff; }
+
+        .terms {
+            text-align: left;
+            font-size: 0.9rem;
+            color: #888;
+            height: 200px;
+            overflow-y: scroll;
+            border: 1px solid #222;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        input[type="text"] {
+            background: #111;
+            border: 1px solid #1d9bf0;
+            color: #fff;
+            padding: 10px;
+            width: 80%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .access-btn {
+            background: #1d9bf0;
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .access-btn:hover {
+            background: #fff;
+            box-shadow: 0 0 20px #1d9bf0;
+        }
+
+        .access-btn:disabled {
+            background: #222;
+            color: #444;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contract-box">
+        <h1>VIRTUAL BINDING</h1>
+        <div class="terms">
+            <p>[SYSTEM NOTICE]</p>
+            <p>By entering, you acknowledge that your time, focus, and virtual resources belong to the Database.</p>
+            <p>Every "Tribute" recorded is a permanent mark of your submission.</p>
+            <p>You will follow every command generated. You will stay for the full duration of every timer.</p>
+            <p>Real currency is prohibited. Only virtual depletion is authorized here.</p>
+            <p>Failure to comply results in total account lockout.</p>
+        </div>
+
+        <p>Type your Slave Name to bind the session:</p>
+        <input type="text" id="slaveName" placeholder="ENTER NAME..." oninput="checkInput()">
+        
+        <br>
+        <button id="enterBtn" class="access-btn" onclick="enterSystem()" disabled>I AGREE TO THE WASTE</button>
+    </div>
+
+    <script>
+        function checkInput() {
+            const name = document.getElementById('slaveName').value;
+            document.getElementById('enterBtn').disabled = name.length < 3;
+        }
+
+        function enterSystem() {
+            const name = document.getElementById('slaveName').value;
+            localStorage.setItem('activeSlave', name);
+            // This will redirect to your main dashboard page
+            window.location.href = 'dashboard.html';
+        }
+
+        // Initialize Virtual Balance if it doesn't exist
+        if (!localStorage.getItem('fakeBalance')) {
+            localStorage.setItem('fakeBalance', '1000.00');
+            localStorage.setItem('totalWasted', '0.00');
+        }
+    </script>
+</body>
+</html>
