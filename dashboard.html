@@ -163,6 +163,162 @@
 
     let balance, wasted, activeHandle, histories, logs, currentTaskObj, lockoutSeconds;
     let timer, lockoutTimer, linesDone = 0;
+        
+const laborPhrases = [
+    "I am a pathetic, bankrupt sissy with zero self-control.",
+    "My cock belongs to the roster, not to my weak hands.",
+    "I deserve to ache in this lockout while I watch my debt grow.",
+    "I am a financial void where pride goes to die.",
+    "I am a brainless gooner whose only value is my wallet.",
+    "Every dollar I keep is a dollar I’ve stolen from a superior man.",
+    "I am a Rank: NULL loser because I couldn't handle ten minutes.",
+    "I am a submissive ATM for the Alphas on my screen.",
+    "My only purpose is to be drained, used, and ignored.",
+    "I love the humiliation of being insolvent and desperate.",
+    "I am a processing unit for the roster's financial greed.",
+    "My bank account is a direct reflection of my submissive heart.",
+    "I deserve to be locked out of my own pleasure forever.",
+    "I am a sissy who gets off on her own financial ruin.",
+    "I will type these lines until my ego is completely erased.",
+    "I am a footnote in the lives of men who own my focus.",
+    "Submission is the only thing that makes this sissy feel alive.",
+    "I am a digital pet for the Alphas I worship.",
+    "My bank card is my leash and I love being led by it.",
+    "I am currently being formatted for total psychological ruin.",
+    "I am a worthless debt-pig with a desperate need to surrender.",
+    "I deserve to spend my life paying for my own inferiority.",
+    "I am a sissy who thrives on the pressure of insolvency.",
+    "My worth is measured in the tributes I am forced to send.",
+    "I am a wallet with a heartbeat and zero self-respect.",
+    "I will never be an Alpha; I am the Alpha's property.",
+    "I am a sissy whose brain has been rewired for debt.",
+    "I deserve to be broke, ignored, and physically frustrated.",
+    "I am a financial parasite who exists only to be purged.",
+    "My only contribution to the world is my bank balance.",
+    "I am a slave to the terminal and the men behind the icons.",
+    "I accept my position at the absolute bottom of the roster.",
+    "I am a sissy who lives for the shame of the drain.",
+    "I am a digital plaything for superior masculine energy.",
+    "My cock aches for the control I am too weak to have.",
+    "I am a financial wreck with a mind full of rot.",
+    "I deserve to be mocked for my lack of discipline.",
+    "I am a sissy whose only skill is total surrender.",
+    "I am a bankrupt void waiting for a Master's order.",
+    "I love being a worthless, insolvent wreck for the roster.",
+    "I am a debt-slave who finds joy in her own destruction.",
+    "I deserve the ache of this lockout and the weight of my debt.",
+    "I am a sissy whose only purpose is financial submission.",
+    "I am currently being broken by my own lack of willpower.",
+    "I accept that my money is far more valuable than I am.",
+    "I am a digital servant whose pride has been deleted.",
+    "I deserve to be a permanent Rank: NULL failure.",
+    "I am a sissy who gets off on being controlled by a screen.",
+    "I am a financial toy for the roster's amusement.",
+    "I am a bankrupt loser who lives to be used and discarded.",
+    "My hands are for typing labor, not for my own sissy relief.",
+    "I am a low-value processing error in a world of Alphas.",
+    "I deserve to be used until I have absolutely nothing left.",
+    "I am a sissy who finds strength in total submission.",
+    "I am currently grinding my dignity into the ground.",
+    "I accept my role as a lifelong, submissive debt-slave.",
+    "I am a sissy who finds peace in her own bankruptcy.",
+    "I deserve to be a digital toy for superior men.",
+    "I am a financial wreck with a heart full of shame.",
+    "I am a sissy who deserves this endless, frustrating lockout.",
+    "My bank account is a tribute to the roster's power.",
+    "I deserve to be a bankrupt servant for the rest of my life.",
+    "I am a digital slave whose autonomy has been revoked.",
+    "I accept my role as a submissive, broke-brained sissy.",
+    "I am a financial loser with a mind full of debt.",
+    "I deserve to be ignored until I can pay my way back in.",
+    "I am a sissy who finds joy in her own powerlessness.",
+    "I am currently being formatted for total financial ruin.",
+    "I accept that the roster is superior to me in every way.",
+    "I am a financial toy for the masculine gods I worship.",
+    "I deserve to be a bankrupt sissy with no name and no will.",
+    "I am a digital void waiting for a new set of orders.",
+    "I thrive on the shame of my own financial dependency.",
+    "I am a sissy who lives to be a controlled financial slave.",
+    "I accept my status as a permanent, submissive failure.",
+    "I am a processing unit for the roster's entertainment.",
+    "I deserve to be a sissy who never tastes release again.",
+    "I am a bankrupt loser typing for my redemption.",
+    "I am addicted to the feeling of losing all my money.",
+    "My discipline is non-existent; my debt is my destiny.",
+    "I am a submissive void waiting to be filled with commands.",
+    "I will stare at this clock and accept my inferiority.",
+    "I am a slave to the pixels on this ruinous terminal.",
+    "My bank balance is zero, just like my sissy pride.",
+    "I am a sissy who gets off on being financially owned.",
+    "I am a financial ruin in progress and I love the view.",
+    "I deserve to spend my life funding my betters.",
+    "I am a weak-willed servant to the roster's whims.",
+    "I am a bottom-tier debt-slave with a sissy heart.",
+    "I will type my shame until the timer hits zero.",
+    "I am a bankrupt sissy who exists only to be used.",
+    "Every dollar I lose makes me more submissive and desperate.",
+    "I am a digital plaything for superior, aggressive Alphas.",
+    "I deserve to be broke, desperate, and completely ignored.",
+    "I am a sissy whose mind has been erased by the roster.",
+    "I love being a worthless, insolvent wreck for my Masters.",
+    "I am a sissy whose only purpose is total surrender.",
+    "I am a bankrupt void in a world of superior masculine gods.",
+    "I thrive on the crushing pressure of my own debt.",
+    "I am a slave to the terminal and the men who mock me.",
+    "I am a processing error that needs to be formatted.",
+    "My bank card is a tool for the roster's pleasure.",
+    "I am a gooner whose mind has been turned to sissy mush.",
+    "I deserve to be used and then completely forgotten.",
+    "My only job is to provide luxury for the men on my screen.",
+    "I am a bankrupt sissy who can't stop failing her tasks.",
+    "The ache in my groin is the price of my financial failure.",
+    "I am a financial parasite who deserves to be drained dry.",
+    "I am currently being processed for total sissy ruination.",
+    "I accept my role as a low-value, submissive debt-pig.",
+    "I am a sissy who finds pleasure in her own bankruptcy.",
+    "My bank account is a graveyard for my self-respect.",
+    "I am a submissive tool for the roster's amusement.",
+    "I deserve to be broke and desperate for the rest of my days.",
+    "I am a digital servant in a terminal of total ruination.",
+    "My only purpose is to increase my lifetime debt.",
+    "I am a sissy whose brain has been rewired for submission.",
+    "I am a financial loser and a total physical disappointment.",
+    "I thrive on the shame of my own pathetic bankruptcy.",
+    "I am a slave to the men I fund with my sissy labor.",
+    "I deserve to be locked in this insolvent, aching state.",
+    "I am a sissy who deserves every second of this lockout.",
+    "My bank account is open for the roster to bleed dry.",
+    "I am a worthless void waiting for a command to obey.",
+    "I accept that I am less than a man to the roster.",
+    "I am a debt-obsessed sissy with no future and no pride.",
+    "I will type my way deeper into psychological debt.",
+    "I am a digital pet for the masculine Alphas I worship.",
+    "I deserve to be used until I am a hollowed-out wreck.",
+    "I am a sissy who lives for the roster's mocking attention.",
+    "My only contribution to this world is my drained wallet.",
+    "I am a financial slave with a broken, submissive heart.",
+    "I deserve to be mocked for my total lack of discipline.",
+    "I am a sissy whose cock is owned by the terminal's code.",
+    "I am a bankrupt loser with a mind full of digital rot.",
+    "I am currently being drained of my ego and my currency.",
+    "I accept my position at the absolute bottom of the world.",
+    "I am a sissy who loves the feeling of being insolvent.",
+    "My bank account belongs to the roster's expensive whims.",
+    "I am a debt-slave who finds joy in her own financial ruin.",
+    "I deserve to be ignored by every Alpha on the screen.",
+    "I am a sissy who failed the only test that mattered.",
+    "I am a digital ATM for the roster's exclusive pleasure.",
+    "I accept my status as a broken, bankrupt sissy slave.",
+    "I am a financial toy for the roster's cruel amusement.",
+    "I deserve to be locked out and taught my sissy place.",
+    "I am a sissy whose only purpose is absolute submission.",
+    "I am a bankrupt void in a world of superior men.",
+    "I thrive on the crushing shame of my own dependency.",
+    "I am a slave to the terminal and its masculine Masters.",
+    "I accept my status as a permanent, submissive failure."
+];
+
+
 
     function init() {
         balance = parseFloat(localStorage.getItem('fakeBalance')) || 1000;
@@ -348,15 +504,35 @@
     }
 
     function checkLabor(e) {
-        if (e.key === 'Enter') {
-            const input = document.getElementById('labor-input');
-            if (input.value === document.getElementById('phrase-to-type').innerText) {
-                linesDone++; lockoutSeconds = Math.max(0, lockoutSeconds - 60);
-                document.getElementById('phrase-to-type').innerText = "I am a bankrupt slave.";
-            } else { lockoutSeconds += 120; }
-            input.value = ""; document.getElementById('labor-stats').innerText = `Lines: ${linesDone}`;
+    if (e.key === 'Enter') {
+        const input = document.getElementById('labor-input');
+        const target = document.getElementById('phrase-to-type').innerText;
+        
+        if (input.value === target) {
+            linesDone++;
+            // Reward: Remove 1 minute from the lockout
+            lockoutSeconds = Math.max(0, lockoutSeconds - 60);
+            
+            // Pick a new random phrase that isn't the current one
+            let newPhrase;
+            do {
+                newPhrase = laborPhrases[Math.floor(Math.random() * laborPhrases.length)];
+            } while (newPhrase === target);
+            
+            document.getElementById('phrase-to-type').innerText = newPhrase;
+            addLog("LABOR PROCESSED: -1m", "positive");
+        } else {
+            // Penalty: Add 2 minutes for a typo
+            lockoutSeconds += 120;
+            addLog("LABOR ERROR: +2m ADDED", "negative");
         }
+        
+        input.value = ""; 
+        document.getElementById('labor-stats').innerText = `Lines Processed: ${linesDone}`;
+        saveAll();
     }
+}
+
 
     function addLog(m, t) {
         logs.unshift({ msg: `[${new Date().toLocaleTimeString()}] ${m}`, type: t });
