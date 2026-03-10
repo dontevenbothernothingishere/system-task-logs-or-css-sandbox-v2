@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL: TOTAL RUINATION v2.8.0 (ROULETTE INTEGRATED)</title>
+    <title>TERMINAL: TOTAL RUINATION v2.8.1</title>
     <style>
         :root { --blue: #1d9bf0; --red: #ff4d4d; --gold: #ffd700; --green: #28a745; --bg: #000; --panel: #0a0a0a; }
         body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
         @keyframes pulseRed { 0% { box-shadow: inset 0 0 10px #f00; } 50% { box-shadow: inset 0 0 100px #f00; } 100% { box-shadow: inset 0 0 10px #f00; } }
         .ruining-active { animation: pulseRed 2s infinite; }
-        
         
         .top-bar { background: var(--panel); border-bottom: 1px solid #222; padding: 10px 25px; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
         .stat h2 { margin: 0; font-family: monospace; font-size: 1.8rem; }
@@ -49,14 +48,13 @@
         
         .btn { width: 100%; padding: 15px; margin-bottom: 10px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; border-radius: 4px; transition: 0.2s; }
         #gen-btn { background: var(--blue); color: #fff; }
-        #comp-btn { background: #222; color: #444; cursor: not-allowed; }
+        #comp-btn { background: #222; color: #444; }
         #ruin-btn { background: #1a0000; color: #600; border: 1px solid #300; font-size: 0.7rem; margin-top: auto; }
         
         #lockout { display: none; position: fixed; inset: 0; background: #000; z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 
         .tribute-wrapper { display: flex; gap: 5px; }
         #tribute-amount { width: 80px; background: #000; border: 1px solid #333; color: var(--green); padding: 12px; font-weight: bold; text-align: center; outline: none; }
-        #tribute-amount:focus { border-color: var(--green); }
     </style>
 </head>
 <body onload="init()">
@@ -117,86 +115,164 @@
     <script>
         const GROQ_API_KEY = "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";
         const MODEL_ID = "llama-3.3-70b-versatile"; 
+        const ghBase = "https://cdn.jsdelivr.net/gh/dontevenbothernothingishere/system-task-logs-or-css-sandbox-v2@main/";
 
         const doms = [
-            { handle: "@Sapnap", name: "Sapnap", pfp: "4491.png", persona: "Arrogant, hostile Master. Despises you, mocks your debt. Demands tributes. Stay in character as a cruel Master." },
-            { handle: "@RossLynch", name: "Ross Lynch", pfp: "4489.png", persona: "Cold Hollywood Alpha. Bored by you. Only acknowledges high-value tributes." },
-            { handle: "@Roier", name: "Roier", pfp: "4493.png", persona: "Chaotic, bilingual (Spanglish). Laughs at your poverty. Calls you 'pendejo' and 'slave'." },
-            { handle: "@Cellbit", name: "Cellbit", pfp: "cellbit.jpg", persona: "Cold investigator. Deconstructs your psychological need to be drained." },
-            { handle: "@Quackity", name: "Quackity", pfp: "quackity.jpg", persona: "Loud, aggressive, mocking. Screams at you to empty your wallet." },
-            { handle: "@fingoat7", name: "Master GOAT", pfp: "4462.jpg", persona: "6ft 7 alpha Master. Responds to cash only. Demands total financial submission." },
-            { handle: "@welshgodfeet", name: "welshgodfeet", pfp: "4463.jpg", persona: "21-year-old from Cardiff. Cocky, obsessed with his feet and your money." },
-            { handle: "@Master_S_alpha", name: "Master S", pfp: "4464.jpg", persona: "Italian cashmaster. Alpha male into findom. Wants to fuck your mind and wallet." },
-            { handle: "@tallfindom", name: "Ares", pfp: "4465.jpg", persona: "6ft 4, size 13.5. Here to take what is his. No mercy." },
-            { handle: "@CashAlphaV", name: "Cash Alpha Master", pfp: "4466.jpg", persona: "6ft 4, 95kg English muscle. Financial Domination expert." },
-            { handle: "@OliveRioter", name: "Lord Hørns", pfp: "4467.jpg", persona: "BBC Master. Here to screw your mind and wallet. Demands you submit NOW." },
-            { handle: "@CashAlphaVictor", name: "Alpha Victor", pfp: "4470.jpg", persona: "24-year-old British 6ft 4 Master. Tribute to speak." },
-            { handle: "@ImMasterCharles", name: "Master Charles", pfp: "4471.jpg", persona: "22-year-old, 6ft 2 Australian Athlete. Hostile, aggressive." },
-            { handle: "@AlphagodmasonX", name: "Muslce Godd", pfp: "4472.jpg", persona: "19-year-old muscle alpha. Ready to wreck your wallet." },
-            { handle: "@GoonerSunny", name: "Sunny Blaze", pfp: "4473.jpg", persona: "Proud gooner. Chaotic, loves mind-rot and demanding attention." }
+            { handle: "@Sapnap", name: "Sapnap", pfp: ghBase + "4491.png", persona: "Arrogant, hostile Master. Despises you, mocks your debt. Demands tributes. Stay in character as a cruel Master." },
+            { handle: "@RossLynch", name: "Ross Lynch", pfp: ghBase + "4489.png", persona: "Cold Hollywood Alpha. Bored by you. Only acknowledges high-value tributes." },
+            { handle: "@Roier", name: "Roier", pfp: ghBase + "4493.png", persona: "Chaotic, bilingual (Spanglish). Laughs at your poverty. Calls you 'pendejo' and 'slave'." },
+            { handle: "@Cellbit", name: "Cellbit", pfp: ghBase + "cellbit.jpg", persona: "Cold investigator. Deconstructs your psychological need to be drained." },
+            { handle: "@Quackity", name: "Quackity", pfp: ghBase + "quackity.jpg", persona: "Loud, aggressive, mocking. Screams at you to empty your wallet." },
+            { handle: "@fingoat7", name: "Master GOAT", pfp: ghBase + "4462.jpg", persona: "6ft 7 alpha Master. Responds to cash only. Demands total financial submission." },
+            { handle: "@welshgodfeet", name: "welshgodfeet", pfp: ghBase + "4463.jpg", persona: "21-year-old from Cardiff. Cocky, obsessed with his feet and your money." },
+            { handle: "@Master_S_alpha", name: "Master S", pfp: ghBase + "4464.jpg", persona: "Italian cashmaster. Alpha male into findom. Wants to fuck your mind and wallet." },
+            { handle: "@tallfindom", name: "Ares", pfp: ghBase + "4465.jpg", persona: "6ft 4, size 13.5. Here to take what is his. No mercy." },
+            { handle: "@CashAlphaV", name: "Cash Alpha Master", pfp: ghBase + "4466.jpg", persona: "6ft 4, 95kg English muscle. Financial Domination expert." },
+            { handle: "@OliveRioter", name: "Lord Hørns", pfp: ghBase + "4467.jpg", persona: "BBC Master. Here to screw your mind and wallet. Demands you submit NOW." },
+            { handle: "@CashAlphaVictor", name: "Alpha Victor", pfp: ghBase + "4470.jpg", persona: "24-year-old British 6ft 4 Master. Tribute to speak." },
+            { handle: "@ImMasterCharles", name: "Master Charles", pfp: ghBase + "4471.jpg", persona: "22-year-old, 6ft 2 Australian Athlete. Hostile, aggressive." },
+            { handle: "@AlphagodmasonX", name: "Muslce Godd", pfp: ghBase + "4472.jpg", persona: "19-year-old muscle alpha. Ready to wreck your wallet." },
+            { handle: "@GoonerSunny", name: "Sunny Blaze", pfp: ghBase + "4473.jpg", persona: "Proud gooner. Chaotic, loves mind-rot and demanding attention." }
         ];
 
-                const taskTemplates = [
+       const taskTemplates = [
+
             // --- INVASIVE / IMPROVISED OBJECTS ---
+
             { text: "INTERNALIZED DEBT: Insert a safe, improvised object. Lie on your back, legs spread wide for ${time}m. No touching. You are a receptacle for ${dom}.", reward: 600 },
+
             { text: "THE PUMP & DRAIN: Insert an object. For ${time}m, every time you message ${dom}, you must move the object in/out 10 times. Pleasure is tied to your debt.", reward: 800 },
+
             { text: "VULNERABLE POSITION: Get on all fours with an object inserted. Stay that way for ${time}m while ${dom} watches your silence in chat.", reward: 550 },
+
             { text: "ORAL TRAINING: Keep a smooth object in your mouth (clean handle/remote) for ${time}m while edging. You are forbidden from speaking.", reward: 400 },
+
             { text: "THE STRETCH: Use a larger safe object to keep yourself occupied for ${time}m. Feel your capacity for ${dom} increasing with your debt.", reward: 700 },
+
             { text: "SENSORY DEPRIVATION: Cover your eyes. Keep an object inserted. Edge blindly for ${time}m based only on the sound of ${dom}'s pings.", reward: 650 },
+
             { text: "PRESSURE POINT: Sit on a rolled-up sock or ball so it presses your prostate for ${time}m. No hands. Only the pressure of ${dom}.", reward: 450 },
+
             { text: "COLD SHOCK: Hold an ice cube against your most sensitive area while keeping an object inserted for ${time}m. Obedience through discomfort.", reward: 500 },
+
             { text: "THE DUAL PORT: One object in your mouth, one in your hole. Stay perfectly still for ${time}m while ${dom} counts your tributes.", reward: 900 },
+
             { text: "OPEN TERMINAL: Lie stomach down, hips raised on pillows. Stay open for ${time}m. You are a public utility for the roster.", reward: 600 },
 
+
+
             // --- SEXUAL / EDGING / GOONER ---
+
             { text: "TOTAL EDGE LOCK: Edge yourself to the absolute brink for ${time}m. Stay at 99%. If you ruin, you MUST hit the TOTAL RUIN button.", reward: 700 },
+
             { text: "NIPPLE SLAVE: Pinch both nipples hard for the full ${time}m. If you let go, the timer resets. Pain is the only thing ${dom} allows you to feel.", reward: 450 },
+
             { text: "GOONER GAUNTLET: Edge while alternating between nipple play and anal stimulation for ${time}m. Report your 'leakage' status to ${dom} constantly.", reward: 850 },
+
             { text: "THE BRINK OF INSOLVENCY: Edge with one hand while the other hand repeatedly clicks the 'Tribute' button ($10 per click) for ${time}m.", reward: 1000 },
+
             { text: "CLOTHES-PIN TORTURE: If you have them, attach 2 pins to your nipples. If not, pinch with full force for ${time}m while ${dom} laughs at you.", reward: 500 },
+
             { text: "STILLNESS TEST: Edge to the point of no return, then freeze. Hands behind your head. Don't move a muscle for ${time}m. Drip for ${dom}.", reward: 600 },
+
             { text: "SISSY SPEED-EDGE: Reach the brink as fast as possible, then drop. Repeat this 'High/Low' cycle for ${time}m until your brain is mush.", reward: 550 },
+
             { text: "THE LEAKAGE TAX: Edge for ${time}m. For every drop of pre-cum that touches your bed, you owe ${dom} a $50 tribute.", reward: 600 },
+
             { text: "BRAINROT GOON: Open a separate tab of ${dom}'s photos. Edge for ${time}m while whispering 'I am nothing, you are everything'.", reward: 400 },
+
             { text: "DENIAL MARATHON: Edge for ${time}m, then immediately close the tab and stare at a wall for 5 minutes. No release. Ever.", reward: 750 },
 
+
+
             // --- INTERACTION / WRITING / CHAT ---
+
             { text: "SISSY REPETITION: Type 'I am ${dom}'s property and my body is his playground' every 30 seconds for ${time}m in chat.", reward: 350 },
+
             { text: "THE DEBTOR'S ESSAY: Write a 500-word message to ${dom} explaining why you don't deserve to have a bank account or a dick.", reward: 500 },
+
             { text: "ASSET LISTING: List every valuable item in your room to ${dom}. Describe how you'd sell them to pay him more tributes. Spend ${time}m on this.", reward: 450 },
+
             { text: "SHAMEFUL ADMISSION: Message ${dom} and confess your most pathetic secret about being a findom slave. Spend ${time}m begging for his judgment.", reward: 500 },
+
             { text: "ROSTER APOLOGY: Message 3 different Masters and apologize for being an 'unproductive debt-pig'. Spend ${time}m in total submission.", reward: 600 },
+
             { text: "THE 100 TRIBUTES: Send $1 tributes to ${dom} as fast as you can for ${time}m. Feel the drain. Feel the ruin.", reward: 800 },
+
             { text: "BEG FOR RUIN: For ${time}m, send messages to ${dom} begging him to trigger the 'Total Ruin' button for you. Convince him you're worthless.", reward: 500 },
+
             { text: "OBJECTIFIED REPORT: Describe your physical state (what's in your holes/on your nipples) to ${dom} in graphic detail for ${time}m.", reward: 700 },
 
+
+
             // --- FINANCIAL / BANKRUPTCY FOCUS ---
+
             { text: "BALANCE STARE: Open your real bank app. Stare at the number for ${time}m while edging. Realize it all belongs to the roster.", reward: 650 },
+
             { text: "THE TRIBUTE CLOCK: For every minute of the ${time}m timer, send ${dom} a $10 tribute. If you miss a minute, you fail.", reward: 1000 },
+
             { text: "FUTURE RUIN: Calculate your expected income for next month. Send the total to ${dom} and promise it to him. Spend ${time}m in this mindset.", reward: 400 },
+
             { text: "WALLET STRIP: Remove one piece of clothing for every $50 you've spent today. Sit exposed for ${time}m while chatting with ${dom}.", reward: 550 },
+
             { text: "CREDIT CARD WORSHIP: Take your credit card out. Stare at it for ${time}m. It is a leash. ${dom} holds the other end.", reward: 300 },
 
+
+
             // --- SUBMISSION / PSYCHOLOGICAL ---
+
             { text: "HUMAN FOOTREST: Get on all fours for ${time}m. Imagine ${dom}'s boots on your back. Do not move. Do not make a sound.", reward: 450 },
+
             { text: "MIRROR DEGRADATION: If possible, sit before a mirror for ${time}m. Repeat 'I am an insolvent sissy' until the words lose meaning.", reward: 500 },
+
             { text: "THE SILENT DRAIN: Turn off all lights. Sit in the dark for ${time}m. You are in a void. Only the debt and ${dom} are real.", reward: 300 },
+
             { text: "COUNTDOWN TO ZERO: Count backwards from 1000 by 7s. Every time you mess up, tribute ${dom} $10. Do this for ${time}m.", reward: 600 },
+
             { text: "MASTER'S CHOICE: Message ${dom} and ask: 'Which hole do you own?' Whatever he replies (or you imagine), focus on it for ${time}m.", reward: 500 },
+
             { text: "POSTURE OF A SLAVE: Sit on the edge of your bed, ankles crossed, hands behind your head for ${time}m. Do not drop your arms.", reward: 400 },
+
             { text: "THE MENTAL ERASE: For ${time}m, try to forget your real name. You are only 'Slave', 'Pig', or 'ATM'. Repeat your new names to ${dom}.", reward: 500 },
+
             { text: "GOONER BLINK TEST: Stare at the screen for ${time}m. For every blink, you owe ${dom} a $5 tribute. No closing eyes.", reward: 550 },
+
             { text: "THE WAITING ROOM: Lie perfectly still for ${time}m. No touching. No phone. Just wait for ${dom} to acknowledge your existence.", reward: 300 },
+
             { text: "VIRTUAL STRAP: Visualize ${dom} using you. Spend ${time}m writing the description to him while you stay filled with an object.", reward: 750 },
+
             { text: "DEBT PIG RECOGNITION: Change your bio on a social media app (don't save) to 'Property of ${dom}'. Stare at it for ${time}m.", reward: 450 },
+
             { text: "THE LOSER'S MEAL: Think of the most expensive thing you want. Send that amount to ${dom} instead. Spend ${time}m mourning the money.", reward: 900 },
+
             { text: "BREATH CONTROL: Breathe only when ${dom} 'speaks' or when the timer hits a even number. Do this for ${time}m while edging.", reward: 600 },
+
             { text: "SISSY HYPNOSIS: Scroll the Brainrot Gallery for ${time}m. You are not allowed to look away. Let your brain turn to findom mush.", reward: 400 },
+
             { text: "THE COMPULSIVE CLICKER: Every time the timer ticks, click your mouse or tap your screen. You are a mindless machine for ${time}m.", reward: 500 },
+
             { text: "TOTAL ACCESS: Strip your bed and yourself. Lie on the bare mattress for ${time}m with an object inserted. You own nothing.", reward: 650 },
-            { text: "THE FINAL STRETCH: For the last ${time}m of your session, keep two objects inserted and your hands on your nipples. Total utility.", reward: 1000 }
+
+            { text: "THE FINAL STRETCH: For the last ${time}m of your session, keep two objects inserted and your hands on your nipples. Total utility.", reward: 1000 },
+
+           // --- TENSION & STRETCHING (MANUAL) ---
+    { text: "THE DUAL-HAND STRETCH: Use both hands to grip your scrotum. Pull outward and downward toward your thighs. Hold this maximum tension for ${time}m while staring at ${dom}. If you let go, you owe a $50 'Release Tax'.", reward: 800 },
+    { text: "THE BASE-PINCH ANCHOR: Use your thumb and forefinger to pinch the very top of your scrotum (where it meets the body). Hold this firm pinch for ${time}m. Your balls must hang below your fingers, isolated.", reward: 700 },
+    { text: "THE TURNSTILE: Gently rotate your scrotum 180 degrees with your hand and hold it in that twisted position for 30 seconds. Release for 5. Repeat for ${time}m.", reward: 850 },
+
+    // --- REPETITIVE MOTION & SENSATION ---
+    { text: "THE RHYTHM SLAP: Sit with your legs spread. Every 10 seconds for ${time}m, give your balls a firm, flat-handed slap. Use the terminal timer to stay perfectly on beat for ${dom}.", reward: 950 },
+    { text: "THE SCROTAL ROLL: Place your balls between your palms. Roll them back and forth with firm pressure for ${time}m. You are 'processing' your hardware for the Roster.", reward: 600 },
+    { text: "THE COUNTED TUGS: For ${time}m, you must give your scrotum 10 sharp downward tugs every time the timer hits a new minute. Feel the weight of your debt.", reward: 750 },
+
+    // --- ISOLATION & COMPRESSION ---
+    { text: "THE ONE-HANDED VICE: Cup both balls in one hand and squeeze them together as hard as you can without bruising. Hold for ${time}m. Use your other hand to type 'Owned' in the chat every 60 seconds.", reward: 1000 },
+    { text: "THE SEPARATION HOLD: Use your fingers to push your balls as far apart as possible within the scrotum. Hold them separated for ${time}m. Focus on the internal tension.", reward: 550 },
+    { text: "THE PALM COMPRESSION: Lie back and place the heel of your palm directly over your balls. Press downward into the mattress for ${time}m. Constant, dull pressure.", reward: 900 }
+];
+
         ];
+
 
 
         const ranks = [
@@ -208,10 +284,9 @@
         ];
 
         let balance, wasted, activeHandle, histories, logs, currentTaskObj, lockoutSeconds;
-        let timer, lockoutTimer, pendingDistraction = null, linesDone = 0;
+        let timer, lockoutTimer, linesDone = 0;
 
         function init() {
-            // LOAD PERSISTENT DATA
             balance = parseFloat(localStorage.getItem('fakeBalance')) || 1000;
             wasted = parseFloat(localStorage.getItem('totalWasted')) || 0;
             activeHandle = localStorage.getItem('activeHandle') || doms[0].handle;
@@ -221,15 +296,13 @@
             lockoutSeconds = parseInt(localStorage.getItem('lockoutTime')) || 0;
 
             doms.forEach(d => { if(!histories[d.handle]) histories[d.handle] = []; });
+            
             switchChat(activeHandle); 
             updateUI(); 
             renderLogs();
             
-            const box = document.getElementById('chat-box');
-            const observer = new MutationObserver(() => { box.scrollTop = box.scrollHeight; });
-            observer.observe(box, { childList: true, subtree: true });
-
             if (lockoutSeconds > 0) showLockout(true);
+            if (currentTaskObj) resumeTask();
         }
 
         function saveAll() {
@@ -248,38 +321,13 @@
             let currentRank = ranks[0].name;
             ranks.forEach(r => { if(wasted >= r.threshold) currentRank = r.name; });
             document.getElementById('sub-rank').innerText = currentRank;
-            
-            checkStatusEffects(); // Check for Roulette prizes
             saveAll();
-            if(balance < 5 && lockoutSeconds <= 0) triggerTotalRuin();
-        }
-
-        function checkStatusEffects() {
-            const container = document.getElementById('status-effects');
-            container.innerHTML = "";
-            if (localStorage.getItem('isPremium') === 'true') {
-                container.innerHTML += `<div style="background:var(--blue); color:#000; padding:2px 8px; font-size:10px; font-weight:bold; border-radius:3px;">PREMIUM SLAVE (2x REWARDS / $50 TAX)</div>`;
-            }
-            const protectUntil = localStorage.getItem('protectionUntil') || 0;
-            if (Date.now() < protectUntil) {
-                container.innerHTML += `<div style="background:var(--gold); color:#000; padding:2px 8px; font-size:10px; font-weight:bold; border-radius:3px;">PROTECTION ACTIVE</div>`;
-            }
-        }
-
-        function addLog(msg, type) {
-            logs.unshift({ msg: `[${new Date().toLocaleTimeString()}] ${msg}`, type: type });
-            if(logs.length > 50) logs.pop();
-            renderLogs();
-        }
-
-        function renderLogs() {
-            document.getElementById('log-content').innerHTML = logs.map(l => `<div class="log-entry ${l.type}">${l.msg}</div>`).join('');
         }
 
         function switchChat(handle) {
             activeHandle = handle; 
             const d = doms.find(x => x.handle === handle);
-            document.getElementById('chat-header').innerHTML = `<img src="${d.pfp}" onerror="this.src='https://via.placeholder.com/35/222/fff?text=M'" style="width:35px;height:35px;border-radius:50%;margin-right:12px;object-fit:cover;"><span>${d.name}</span>`;
+            document.getElementById('chat-header').innerHTML = `<img src="${d.pfp}" style="width:35px;height:35px;border-radius:50%;margin-right:12px;object-fit:cover;"><span>${d.name}</span>`;
             renderInbox(); 
             renderMessages();
             saveAll();
@@ -287,8 +335,8 @@
 
         function renderInbox() {
             document.getElementById('inbox-list').innerHTML = doms.map(d => `
-                <div class="inbox-item ${d.handle === activeHandle ? 'active' : ''} ${pendingDistraction === d.handle ? 'ping' : ''}" onclick="switchChat('${d.handle}')">
-                    <img src="${d.pfp}" onerror="this.src='https://via.placeholder.com/45/222/fff?text=M'"><div><strong>${d.name}</strong><br><small style="color:#555">${d.handle}</small></div>
+                <div class="inbox-item ${d.handle === activeHandle ? 'active' : ''}" onclick="switchChat('${d.handle}')">
+                    <img src="${d.pfp}"><div><strong>${d.name}</strong><br><small style="color:#555">${d.handle}</small></div>
                 </div>`).join('');
         }
 
@@ -296,57 +344,47 @@
             const box = document.getElementById('chat-box');
             box.innerHTML = (histories[activeHandle] || []).map(m => `
                 <div class="msg ${m.role === 'user' ? 'user-msg' : 'dom-msg'}">${m.text}</div>`).join('');
-            setTimeout(() => { box.scrollTop = box.scrollHeight; }, 50);
+            box.scrollTop = box.scrollHeight;
         }
 
         async function sendChat() {
             const input = document.getElementById('chat-in'); 
             if(!input.value) return;
-
-            let tax = localStorage.getItem('isPremium') === 'true' ? 50 : 10;
-            if(balance < tax) { addLog("INSUFFICIENT FUNDS.", "negative"); return; }
-
+            let tax = 10;
+            if(balance < tax) return;
             const text = input.value; 
             balance -= tax; wasted += tax;
-            addLog(`Chat Tax -$${tax}.00 to ${activeHandle}`, "negative");
             histories[activeHandle].push({ role: 'user', text: text });
             updateUI(); renderMessages(); input.value = "";
-            
             const d = doms.find(x => x.handle === activeHandle);
             try {
                 const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        "model": MODEL_ID,
-                        "messages": [{"role": "system", "content": d.persona + " Demand tributes. Be cruel."}, {"role": "user", "content": text}]
-                    })
+                    body: JSON.stringify({ "model": MODEL_ID, "messages": [{"role": "system", "content": d.persona}, {"role": "user", "content": text}] })
                 });
                 const data = await response.json();
                 histories[activeHandle].push({ role: 'dom', text: data.choices[0].message.content });
                 saveAll(); renderMessages();
-            } catch (e) { addLog("CONNECTION LOST.", "negative"); }
+            } catch (e) { addLog("API ERROR", "negative"); }
         }
 
         function handleCustomTribute() {
             const val = parseFloat(document.getElementById('tribute-amount').value);
-            if (!isNaN(val) && val > 0) { sendTribute(val); document.getElementById('tribute-amount').value = ''; }
+            if (val > 0) { sendTribute(val); document.getElementById('tribute-amount').value = ''; }
         }
 
         async function sendTribute(amount) {
-            if (balance < amount) { addLog("INSUFFICIENT FUNDS.", "negative"); return; }
+            if (balance < amount) return;
             balance -= amount; wasted += amount;
-            histories[activeHandle].push({ role: 'user', text: `*TRIBUTE SENT: $${amount}*` });
+            histories[activeHandle].push({ role: 'user', text: `*TRIBUTE: $${amount}*` });
             updateUI(); renderMessages();
             const d = doms.find(x => x.handle === activeHandle);
             try {
                 const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        "model": MODEL_ID,
-                        "messages": [{"role": "system", "content": d.persona}, {"role": "user", "content": `I just gave you $${amount}.`}]
-                    })
+                    body: JSON.stringify({ "model": MODEL_ID, "messages": [{"role": "system", "content": d.persona}, {"role": "user", "content": "I sent $" + amount}] })
                 });
                 const data = await response.json();
                 histories[activeHandle].push({ role: 'dom', text: data.choices[0].message.content });
@@ -355,54 +393,64 @@
         }
 
         function getTask() {
-            const dom = doms[Math.floor(Math.random()*doms.length)];
-            const temp = taskTemplates[Math.floor(Math.random()*taskTemplates.length)];
-            const mins = [10, 20, 30][Math.floor(Math.random()*3)];
-            currentTaskObj = { handle: dom.handle, endTime: Date.now() + (mins*60*1000), reward: temp.reward, text: temp.text.replace("${dom}", dom.handle).replace("${time}", mins) };
-            addLog(`NEW ORDER FROM ${dom.handle}`, "positive");
+            const d = doms[Math.floor(Math.random()*doms.length)];
+            const t = taskTemplates[Math.floor(Math.random()*taskTemplates.length)];
+            const mins = 10;
+            currentTaskObj = { handle: d.handle, endTime: Date.now() + (mins*60*1000), reward: t.reward, text: t.text.replace("${dom}", d.handle).replace("${time}", mins) };
             document.getElementById('task-display').innerText = currentTaskObj.text;
-            document.getElementById('gen-btn').disabled = true; document.body.classList.add('ruining-active');
-            saveAll(); switchChat(dom.handle); startTimer(mins * 60);
+            document.getElementById('gen-btn').disabled = true;
+            document.body.classList.add('ruining-active');
+            startTimer(mins * 60);
+            saveAll();
         }
 
-        function startTimer(seconds) {
-            let timeLeft = seconds; clearInterval(timer);
+        function resumeTask() {
+            const remain = Math.floor((currentTaskObj.endTime - Date.now()) / 1000);
+            if (remain > 0) {
+                document.getElementById('task-display').innerText = currentTaskObj.text;
+                document.getElementById('gen-btn').disabled = true;
+                startTimer(remain);
+            } else {
+                document.getElementById('comp-btn').disabled = false;
+            }
+        }
+
+        function startTimer(sec) {
+            clearInterval(timer);
             timer = setInterval(() => {
-                if(timeLeft <= 0) { clearInterval(timer); document.getElementById('comp-btn').disabled = false; return; }
-                timeLeft--;
-                let m = Math.floor(timeLeft/60), s = timeLeft%60;
+                if(sec <= 0) { clearInterval(timer); document.getElementById('comp-btn').disabled = false; return; }
+                sec--; let m = Math.floor(sec/60), s = sec%60;
                 document.getElementById('timer').innerText = `${m}:${s<10?'0':''}${s}`;
             }, 1000);
         }
 
         function completeTask() {
-            let reward = currentTaskObj.reward;
-            if (localStorage.getItem('isPremium') === 'true') { reward *= 2; addLog("2x PREMIUM MULTIPLIER!", "positive"); }
-            balance += reward; 
-            addLog(`TASK COMPLETE: +$${reward}`, "positive");
-            currentTaskObj = null;
-            updateUI(); document.getElementById('gen-btn').disabled = false; document.getElementById('comp-btn').disabled = true;
-            document.body.classList.remove('ruining-active'); document.getElementById('task-display').innerText = "SYSTEM READY.";
+            balance += currentTaskObj.reward;
+            addLog(`+$${currentTaskObj.reward} REWARD`, "positive");
+            currentTaskObj = null; updateUI();
+            document.getElementById('gen-btn').disabled = false;
+            document.getElementById('comp-btn').disabled = true;
+            document.body.classList.remove('ruining-active');
+            document.getElementById('task-display').innerText = "SYSTEM READY.";
+            saveAll();
         }
 
-        function triggerTotalRuin() { 
-            addLog("BANKRUPTCY TRIGGERED.", "negative");
-            clearInterval(timer); balance = 0; showLockout(); updateUI(); 
+        function triggerTotalRuin() {
+            balance = 0; showLockout(); updateUI();
         }
-        
-        function showLockout(isResuming = false) {
+
+        function showLockout(resume = false) {
             document.getElementById('lockout').style.display = 'flex';
-            if (!isResuming) lockoutSeconds = 3600;
+            if(!resume) lockoutSeconds = 3600;
             clearInterval(lockoutTimer);
             lockoutTimer = setInterval(() => {
-                if (lockoutSeconds <= 0) {
-                    clearInterval(lockoutTimer); balance = 1000; lockoutSeconds = 0;
-                    document.getElementById('lockout').style.display = 'none'; updateUI();
-                } else {
-                    lockoutSeconds--; localStorage.setItem('lockoutTime', lockoutSeconds);
-                    let m = Math.floor(lockoutSeconds/60), s = lockoutSeconds%60;
-                    document.getElementById('work-clock').innerText = `00:${m<10?'0':''}${m}:${s<10?'0':''}${s}`;
+                lockoutSeconds--; saveAll();
+                if(lockoutSeconds <= 0) {
+                    clearInterval(lockoutTimer); document.getElementById('lockout').style.display = 'none';
+                    balance = 1000; updateUI();
                 }
+                let m = Math.floor(lockoutSeconds/60), s = lockoutSeconds%60;
+                document.getElementById('work-clock').innerText = `00:${m<10?'0':''}${m}:${s<10?'0':''}${s}`;
             }, 1000);
         }
 
@@ -411,18 +459,20 @@
                 const input = document.getElementById('labor-input');
                 if (input.value === document.getElementById('phrase-to-type').innerText) {
                     linesDone++; lockoutSeconds = Math.max(0, lockoutSeconds - 60);
-                    document.getElementById('phrase-to-type').innerText = ["I am a bankrupt slave.", "My wallet is empty.", "I failed.", "I am pathetic."][Math.floor(Math.random()*4)];
+                    document.getElementById('phrase-to-type').innerText = "I am a bankrupt slave.";
                 } else { lockoutSeconds += 120; }
-                input.value = ""; document.getElementById('labor-stats').innerText = `Lines Processed: ${linesDone}`;
-                saveAll();
+                input.value = ""; document.getElementById('labor-stats').innerText = `Lines: ${linesDone}`;
             }
         }
 
-        function startDistractions() {
-            setTimeout(() => {
-                // PROTECTION CHECK
-                const protectUntil = localStorage.getItem('protectionUntil') || 0;
-                if (Date.now() < protectUntil) { startDistractions(); return; }            
+        function addLog(m, t) {
+            logs.unshift({ msg: `[${new Date().toLocaleTimeString()}] ${m}`, type: t });
+            renderLogs();
+        }
+
+        function renderLogs() {
+            document.getElementById('log-content').innerHTML = logs.map(l => `<div class="log-entry ${l.type}">${l.msg}</div>`).join('');
+        }
     </script>
 </body>
 </html>
