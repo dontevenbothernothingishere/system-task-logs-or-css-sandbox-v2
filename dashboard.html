@@ -10,7 +10,7 @@
         
         @keyframes pulseRed { 0% { box-shadow: inset 0 0 10px #f00; } 50% { box-shadow: inset 0 0 100px #f00; } 100% { box-shadow: inset 0 0 10px #f00; } }
         .ruining-active { animation: pulseRed 2s infinite; }
-        .distraction-flash { box-shadow: inset 0 0 150px rgba(255, 0, 0, 0.9) !important; transition: 0.2s; }
+        
         
         .top-bar { background: var(--panel); border-bottom: 1px solid #222; padding: 10px 25px; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
         .stat h2 { margin: 0; font-family: monospace; font-size: 1.8rem; }
@@ -136,15 +136,68 @@
             { handle: "@GoonerSunny", name: "Sunny Blaze", pfp: "4473.jpg", persona: "Proud gooner. Chaotic, loves mind-rot and demanding attention." }
         ];
 
-        const taskTemplates = [
-            { text: "FINANCIAL DEPRAVITY: Write a 500-word apology to ${dom} for being a waste of space. Send it in chat while lying on your back.", reward: 250 },
-            { text: "EDGE LOCK: ${dom} demands you edge for ${time}m in bed. No blinking. Hands off.", reward: 150 },
-            { text: "WALLET LOCKOUT: Transfer $500 to the 'Void' and lie in silence for ${time}m.", reward: 500 },
-            { text: "SLEEP DEPRIVATION DRAIN: Lie awake in the dark for ${time}m repeating 'My sleep belongs to ${dom}'.", reward: 200 },
-            { text: "BEDRIDDEN BEGGING: Type a desperate paragraph begging ${dom} to ruin your credit score.", reward: 300 },
-            { text: "THE RUINED SISSY: Lie flat, edge for ${time}m while staring at ${dom}'s profile.", reward: 400 },
-            { text: "MINDLESS SCROLLING: Scroll through ${dom}'s pictures for ${time}m.", reward: 150 }
+                const taskTemplates = [
+            // --- INVASIVE / IMPROVISED OBJECTS ---
+            { text: "INTERNALIZED DEBT: Insert a safe, improvised object. Lie on your back, legs spread wide for ${time}m. No touching. You are a receptacle for ${dom}.", reward: 600 },
+            { text: "THE PUMP & DRAIN: Insert an object. For ${time}m, every time you message ${dom}, you must move the object in/out 10 times. Pleasure is tied to your debt.", reward: 800 },
+            { text: "VULNERABLE POSITION: Get on all fours with an object inserted. Stay that way for ${time}m while ${dom} watches your silence in chat.", reward: 550 },
+            { text: "ORAL TRAINING: Keep a smooth object in your mouth (clean handle/remote) for ${time}m while edging. You are forbidden from speaking.", reward: 400 },
+            { text: "THE STRETCH: Use a larger safe object to keep yourself occupied for ${time}m. Feel your capacity for ${dom} increasing with your debt.", reward: 700 },
+            { text: "SENSORY DEPRIVATION: Cover your eyes. Keep an object inserted. Edge blindly for ${time}m based only on the sound of ${dom}'s pings.", reward: 650 },
+            { text: "PRESSURE POINT: Sit on a rolled-up sock or ball so it presses your prostate for ${time}m. No hands. Only the pressure of ${dom}.", reward: 450 },
+            { text: "COLD SHOCK: Hold an ice cube against your most sensitive area while keeping an object inserted for ${time}m. Obedience through discomfort.", reward: 500 },
+            { text: "THE DUAL PORT: One object in your mouth, one in your hole. Stay perfectly still for ${time}m while ${dom} counts your tributes.", reward: 900 },
+            { text: "OPEN TERMINAL: Lie stomach down, hips raised on pillows. Stay open for ${time}m. You are a public utility for the roster.", reward: 600 },
+
+            // --- SEXUAL / EDGING / GOONER ---
+            { text: "TOTAL EDGE LOCK: Edge yourself to the absolute brink for ${time}m. Stay at 99%. If you ruin, you MUST hit the TOTAL RUIN button.", reward: 700 },
+            { text: "NIPPLE SLAVE: Pinch both nipples hard for the full ${time}m. If you let go, the timer resets. Pain is the only thing ${dom} allows you to feel.", reward: 450 },
+            { text: "GOONER GAUNTLET: Edge while alternating between nipple play and anal stimulation for ${time}m. Report your 'leakage' status to ${dom} constantly.", reward: 850 },
+            { text: "THE BRINK OF INSOLVENCY: Edge with one hand while the other hand repeatedly clicks the 'Tribute' button ($10 per click) for ${time}m.", reward: 1000 },
+            { text: "CLOTHES-PIN TORTURE: If you have them, attach 2 pins to your nipples. If not, pinch with full force for ${time}m while ${dom} laughs at you.", reward: 500 },
+            { text: "STILLNESS TEST: Edge to the point of no return, then freeze. Hands behind your head. Don't move a muscle for ${time}m. Drip for ${dom}.", reward: 600 },
+            { text: "SISSY SPEED-EDGE: Reach the brink as fast as possible, then drop. Repeat this 'High/Low' cycle for ${time}m until your brain is mush.", reward: 550 },
+            { text: "THE LEAKAGE TAX: Edge for ${time}m. For every drop of pre-cum that touches your bed, you owe ${dom} a $50 tribute.", reward: 600 },
+            { text: "BRAINROT GOON: Open a separate tab of ${dom}'s photos. Edge for ${time}m while whispering 'I am nothing, you are everything'.", reward: 400 },
+            { text: "DENIAL MARATHON: Edge for ${time}m, then immediately close the tab and stare at a wall for 5 minutes. No release. Ever.", reward: 750 },
+
+            // --- INTERACTION / WRITING / CHAT ---
+            { text: "SISSY REPETITION: Type 'I am ${dom}'s property and my body is his playground' every 30 seconds for ${time}m in chat.", reward: 350 },
+            { text: "THE DEBTOR'S ESSAY: Write a 500-word message to ${dom} explaining why you don't deserve to have a bank account or a dick.", reward: 500 },
+            { text: "ASSET LISTING: List every valuable item in your room to ${dom}. Describe how you'd sell them to pay him more tributes. Spend ${time}m on this.", reward: 450 },
+            { text: "SHAMEFUL ADMISSION: Message ${dom} and confess your most pathetic secret about being a findom slave. Spend ${time}m begging for his judgment.", reward: 500 },
+            { text: "ROSTER APOLOGY: Message 3 different Masters and apologize for being an 'unproductive debt-pig'. Spend ${time}m in total submission.", reward: 600 },
+            { text: "THE 100 TRIBUTES: Send $1 tributes to ${dom} as fast as you can for ${time}m. Feel the drain. Feel the ruin.", reward: 800 },
+            { text: "BEG FOR RUIN: For ${time}m, send messages to ${dom} begging him to trigger the 'Total Ruin' button for you. Convince him you're worthless.", reward: 500 },
+            { text: "OBJECTIFIED REPORT: Describe your physical state (what's in your holes/on your nipples) to ${dom} in graphic detail for ${time}m.", reward: 700 },
+
+            // --- FINANCIAL / BANKRUPTCY FOCUS ---
+            { text: "BALANCE STARE: Open your real bank app. Stare at the number for ${time}m while edging. Realize it all belongs to the roster.", reward: 650 },
+            { text: "THE TRIBUTE CLOCK: For every minute of the ${time}m timer, send ${dom} a $10 tribute. If you miss a minute, you fail.", reward: 1000 },
+            { text: "FUTURE RUIN: Calculate your expected income for next month. Send the total to ${dom} and promise it to him. Spend ${time}m in this mindset.", reward: 400 },
+            { text: "WALLET STRIP: Remove one piece of clothing for every $50 you've spent today. Sit exposed for ${time}m while chatting with ${dom}.", reward: 550 },
+            { text: "CREDIT CARD WORSHIP: Take your credit card out. Stare at it for ${time}m. It is a leash. ${dom} holds the other end.", reward: 300 },
+
+            // --- SUBMISSION / PSYCHOLOGICAL ---
+            { text: "HUMAN FOOTREST: Get on all fours for ${time}m. Imagine ${dom}'s boots on your back. Do not move. Do not make a sound.", reward: 450 },
+            { text: "MIRROR DEGRADATION: If possible, sit before a mirror for ${time}m. Repeat 'I am an insolvent sissy' until the words lose meaning.", reward: 500 },
+            { text: "THE SILENT DRAIN: Turn off all lights. Sit in the dark for ${time}m. You are in a void. Only the debt and ${dom} are real.", reward: 300 },
+            { text: "COUNTDOWN TO ZERO: Count backwards from 1000 by 7s. Every time you mess up, tribute ${dom} $10. Do this for ${time}m.", reward: 600 },
+            { text: "MASTER'S CHOICE: Message ${dom} and ask: 'Which hole do you own?' Whatever he replies (or you imagine), focus on it for ${time}m.", reward: 500 },
+            { text: "POSTURE OF A SLAVE: Sit on the edge of your bed, ankles crossed, hands behind your head for ${time}m. Do not drop your arms.", reward: 400 },
+            { text: "THE MENTAL ERASE: For ${time}m, try to forget your real name. You are only 'Slave', 'Pig', or 'ATM'. Repeat your new names to ${dom}.", reward: 500 },
+            { text: "GOONER BLINK TEST: Stare at the screen for ${time}m. For every blink, you owe ${dom} a $5 tribute. No closing eyes.", reward: 550 },
+            { text: "THE WAITING ROOM: Lie perfectly still for ${time}m. No touching. No phone. Just wait for ${dom} to acknowledge your existence.", reward: 300 },
+            { text: "VIRTUAL STRAP: Visualize ${dom} using you. Spend ${time}m writing the description to him while you stay filled with an object.", reward: 750 },
+            { text: "DEBT PIG RECOGNITION: Change your bio on a social media app (don't save) to 'Property of ${dom}'. Stare at it for ${time}m.", reward: 450 },
+            { text: "THE LOSER'S MEAL: Think of the most expensive thing you want. Send that amount to ${dom} instead. Spend ${time}m mourning the money.", reward: 900 },
+            { text: "BREATH CONTROL: Breathe only when ${dom} 'speaks' or when the timer hits a even number. Do this for ${time}m while edging.", reward: 600 },
+            { text: "SISSY HYPNOSIS: Scroll the Brainrot Gallery for ${time}m. You are not allowed to look away. Let your brain turn to findom mush.", reward: 400 },
+            { text: "THE COMPULSIVE CLICKER: Every time the timer ticks, click your mouse or tap your screen. You are a mindless machine for ${time}m.", reward: 500 },
+            { text: "TOTAL ACCESS: Strip your bed and yourself. Lie on the bare mattress for ${time}m with an object inserted. You own nothing.", reward: 650 },
+            { text: "THE FINAL STRETCH: For the last ${time}m of your session, keep two objects inserted and your hands on your nipples. Total utility.", reward: 1000 }
         ];
+
 
         const ranks = [
             { name: "BROKE SISSY", threshold: 0 },
@@ -171,7 +224,6 @@
             switchChat(activeHandle); 
             updateUI(); 
             renderLogs();
-            startDistractions();
             
             const box = document.getElementById('chat-box');
             const observer = new MutationObserver(() => { box.scrollTop = box.scrollHeight; });
@@ -370,19 +422,7 @@
             setTimeout(() => {
                 // PROTECTION CHECK
                 const protectUntil = localStorage.getItem('protectionUntil') || 0;
-                if (Date.now() < protectUntil) { startDistractions(); return; }
-
-                if(!currentTaskObj) { startDistractions(); return; }
-                const d = doms[Math.floor(Math.random()*doms.length)];
-                if(d.handle === activeHandle) { startDistractions(); return; }
-                pendingDistraction = d.handle; document.body.classList.add('distraction-flash'); renderInbox();
-                setTimeout(() => {
-                    if(pendingDistraction === d.handle) { balance -= 100; addLog(`FAILED ATTENTION: -$100.00`, "negative"); updateUI(); }
-                    pendingDistraction = null; document.body.classList.remove('distraction-flash'); renderInbox();
-                }, 10000);
-                startDistractions();
-            }, Math.random() * 20000 + 15000);
-        }
+                if (Date.now() < protectUntil) { startDistractions(); return; }            
     </script>
 </body>
 </html>
