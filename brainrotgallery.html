@@ -2,38 +2,160 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MASTERS // ZERO_PERMISSION_ZONE</title>
+    <title>MASTERS // MANDATORY_INPUT</title>
     <style>
-        :root { --red: #ff0000; --bg: #000; }
+        :root { --red: #ff0000; --neon: #00ff00; --bg: #000; }
         body, html { 
             background: var(--bg); margin: 0; padding: 0; 
             width: 100vw; height: 100vh; overflow: hidden;
-            font-family: 'Arial Black', sans-serif; cursor: none;
+            font-family: 'Arial Black', sans-serif; cursor: crosshair;
         }
 
-        /* 200 Cell Grid - Forced Chaos */
+        /* The Grid - Becomes BLURRED if you don't mash keys */
         #main-grid {
-            display: grid; 
-            grid-template-columns: repeat(15, 1fr);
+            display: grid; grid-template-columns: repeat(15, 1fr);
             width: 250vw; height: 250vh; margin: -75vh;
-            filter: contrast(15) brightness(0.1) saturate(20);
+            filter: contrast(25) brightness(0.1) saturate(30);
             pointer-events: none;
+            transition: filter 0.2s ease;
         }
 
-        .cell { position: relative; border: 1px solid #0a0a0a; overflow: hidden; height: 10vh; }
-        .cell img { 
-            width: 100%; height: 100%; object-fit: cover; 
-            animation: glitch 0.01s infinite, warp 1s infinite alternate;
+        .cell { position: relative; border: 1px solid #000; height: 10vh; overflow: hidden; }
+        .cell img { width: 100%; height: 100%; object-fit: cover; animation: vib 0.01s infinite; }
+        @keyframes vib { 0% { transform: scale(1.1) translate(5px); } 50% { transform: scale(4) rotate(5deg); filter: invert(1); } }
+
+        /* Interaction UI */
+        #stat-box {
+            position: fixed; top: 0; width: 100%; background: #fff; color: #000;
+            font-size: 4rem; display: flex; justify-content: space-around;
+            padding: 20px; z-index: 10000; font-weight: 900; border-bottom: 40px solid var(--red);
         }
 
-        @keyframes glitch {
-            0% { transform: translate(10px, 10px); filter: invert(0); }
-            50% { transform: translate(-10px, -10px); filter: invert(1); }
-            100% { transform: translate(10px, -10px); }
+        /* The "Stop Everything" Overlay */
+        #forced-input {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 50000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+        #forced-input h1 { color: var(--red); font-size: 6rem; text-align: center; }
+        #forced-input input { font-size: 5rem; width: 90%; text-align: center; background: #111; color: white; border: 10px solid var(--red); }
+
+        /* The Floating Click-Target */
+        #click-me {
+            position: fixed; width: 200px; height: 200px; background: var(--red);
+            color: white; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-size: 2rem; z-index: 20000; cursor: pointer;
+            box-shadow: 0 0 50px white; display: none;
+        }
+    </style>
+</head>
+<body onkeydown="refillWill()" onmousedown="initAudio()">
+
+    <div id="stat-box">
+        <span>DEBT: $<span id="debt">0</span></span>
+        <span>WILL: <span id="will">100</span>%</span>
+    </div>
+
+    <div id="click-me" onclick="targetHit()">CLICK THE MASTER</div>
+
+    <div id="forced-input">
+        <h1 id="prompt">TYPE: I AM A TOOL</h1>
+        <input type="text" id="t-in" autocomplete="off">
+    </div>
+
+    <div id="main-grid"></div>
+
+    <script>
+        const imgs = ["4489.png", "4491.png", "4493.png", "P1", "P2", "P3"]; // Add more URLs
+        const phrases = ["I AM A USELESS PIGGY BANK", "MY HANDS BELONG TO THE ROSTER", "CEASE INDEPENDENT MOVEMENT", "I SURRENDER MY PLEASURE", "THE DEBT IS MY MASTER"];
+
+        let debt = 0;
+        let willpower = 100;
+        let audioCtx;
+
+        window.onload = () => {
+            const grid = document.getElementById('main-grid');
+            for(let i=0; i<225; i++) {
+                const c = document.createElement('div');
+                c.className = 'cell';
+                c.innerHTML = `<img src="${imgs[i % imgs.length]}">`;
+                grid.appendChild(c);
+            }
+            setInterval(decay, 100);
+            setInterval(debtTick, 10);
+            setInterval(spawnTarget, 8000);
+        };
+
+        function decay() {
+            willpower -= 0.5;
+            if(willpower < 0) willpower = 0;
+            document.getElementById('will').innerText = Math.floor(willpower);
+            
+            // IF WILL IS LOW, SCREEN BLURS (YOU CAN'T SEE THE MASTERS)
+            const blurVal = (100 - willpower) / 2;
+            document.getElementById('main-grid').style.filter = `contrast(25) brightness(0.1) blur(${blurVal}px)`;
+            
+            if(willpower <= 0) {
+                triggerForcedInput();
+            }
         }
 
-        @keyframes warp { 0% { transform: scale(1); } 100% { transform: scale(5) rotate(45deg); } }
+        function refillWill() {
+            willpower += 2; // YOU MUST MASH KEYS TO KEEP THE IMAGE CLEAR
+            if(willpower > 100) willpower = 100;
+        }
+
+        function debtTick() {
+            debt += 150.55;
+            document.getElementById('debt').innerText = debt.toLocaleString();
+        }
+
+        function triggerForcedInput() {
+            const div = document.getElementById('forced-input');
+            const prompt = document.getElementById('prompt');
+            const input = document.getElementById('t-in');
+            const target = phrases[Math.floor(Math.random()*phrases.length)];
+            
+            div.style.display = 'flex';
+            prompt.innerText = `TYPE: "${target}"`;
+            input.focus();
+            
+            input.oninput = () => {
+                if(input.value.toUpperCase() === target) {
+                    div.style.display = 'none';
+                    willpower = 100;
+                    input.value = '';
+                }
+            };
+        }
+
+        function spawnTarget() {
+            const btn = document.getElementById('click-me');
+            btn.style.display = 'flex';
+            btn.style.top = Math.random() * 80 + "vh";
+            btn.style.left = Math.random() * 80 + "vw";
+            setTimeout(() => { btn.style.display = 'none'; }, 3000);
+        }
+
+        function targetHit() {
+            document.getElementById('click-me').style.display = 'none';
+            debt += 5000; // PAYING FOR THE PRIVILEGE
+        }
+
+        function initAudio() {
+            if(!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.type = 'sawtooth';
+                o.frequency.value = 30;
+                g.gain.value = 0.5;
+                o.connect(g); g.connect(audioCtx.destination);
+                o.start();
+            }
+        }
+    </script>
+</body>
+</html>
 
         /* Rapid Crawl Phrases */
         .crawl {
