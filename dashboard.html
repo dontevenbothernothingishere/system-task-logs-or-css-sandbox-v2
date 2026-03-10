@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TERMINAL MOBILE v6.9</title>
+    <title>TERMINAL MOBILE v7.5 - FIXED</title>
     <style>
         :root { --blue: #1d9bf0; --red: #ff4d4d; --gold: #ffd700; --green: #28a745; --bg: #000; --panel: #0a0a0a; }
         body { background: var(--bg); color: #fff; font-family: -apple-system, system-ui, sans-serif; margin: 0; display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
@@ -34,6 +34,185 @@
         .btn-send { background: var(--blue); border: none; border-radius: 50%; width: 40px; height: 40px; color: #fff; cursor: pointer; }
         .btn-tribute { background: var(--green); border: none; border-radius: 20px; padding: 8px 15px; color: #fff; font-weight: bold; font-size: 0.7rem; cursor: pointer; flex: 1; }
 
+        #lockout { display: none; position: fixed; inset: 0; background: #000; z-index: 10000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
+        #work-clock { font-size: 3.5rem; color: #fff; font-family: monospace; margin: 10px 0; }
+        #phrase-to-type { color: var(--gold); font-weight: bold; margin-bottom: 20px; font-style: italic; min-height: 40px; }
+        #labor-input { width: 85%; background: #111; color: #fff; border: 1px solid #333; padding: 15px; font-size: 1rem; border-radius: 10px; outline: none; }
+    </style>
+</head>
+<body onload="init()">
+
+    <div class="top-bar">
+        <div class="stat"><p>Sub Rank</p><h2 id="sub-rank" style="color:var(--gold)">...</h2></div>
+        <div class="stat"><p>Wallet</p><h2 id="bal" style="color:var(--blue)">$0</h2></div>
+        <div class="stat"><p>Wasted</p><h2 id="waste" style="color:var(--red)">$0</h2></div>
+    </div>
+
+    <div class="inbox" id="inbox-list"></div>
+
+    <div class="main-container">
+        <div id="chat-header">SELECT MASTER</div>
+        <div id="chat-box"></div>
+        <div class="controls">
+            <div class="row">
+                <input type="number" id="tribute-amt" placeholder="$ Amount">
+                <button class="btn-tribute" onclick="handleCustomTribute()">SEND DRAIN TRIBUTE</button>
+            </div>
+            <div class="row">
+                <input type="text" id="chat-in" placeholder="Message Master..." onkeydown="if(event.key==='Enter') sendChat()">
+                <button class="btn-send" onclick="sendChat()">➔</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="lockout">
+        <h1 style="color:red; margin:0;">STUCK DETECTED</h1>
+        <p style="color:#666; font-size:0.7rem;">SYSTEM OVERRIDE: RELEASING IN 10s</p>
+        <h2 id="work-clock">00:00:10</h2>
+        <p id="phrase-to-type">I have finished my labor.</p>
+        <input type="text" id="labor-input" autocomplete="off" placeholder="Wait for zero..." onkeydown="checkLabor(event)">
+    </div>
+
+<script>
+    const GROQ_API_KEY = "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";
+    const DOMS = [
+        { handle: "@Sapnap", name: "Sapnap", color: "#ff7b00", persona: "Aggressive, hostile Master." },
+        { handle: "@Roier", name: "Roier", color: "#ff00ff", persona: "Chaotic findom mockery." },
+        { handle: "@Cellbit", name: "Cellbit", color: "#5d3fd3", persona: "Psychological debt drainer." },
+        { handle: "@RossLynch", name: "Ross Lynch", color: "#ffd700", persona: "Cold, superior Alpha." }
+    ];
+
+    let balance = parseFloat(localStorage.getItem('fakeBalance')) || 1000;
+    let wasted = parseFloat(localStorage.getItem('totalWasted')) || 0;
+    let histories = JSON.parse(localStorage.getItem('chats')) || {};
+    let activeHandle = localStorage.getItem('activeHandle') || DOMS[0].handle;
+    let lockoutSeconds = parseInt(localStorage.getItem('lockoutTime')) || 0;
+    let isLockoutActive = false;
+
+    function saveAll() {
+        localStorage.setItem('fakeBalance', balance);
+        localStorage.setItem('totalWasted', wasted);
+        localStorage.setItem('chats', JSON.stringify(histories));
+        localStorage.setItem('activeHandle', activeHandle);
+        localStorage.setItem('lockoutTime', lockoutSeconds);
+    }
+
+    function init() {
+        DOMS.forEach(d => { if(!histories[d.handle]) histories[d.handle] = []; });
+        switchChat(activeHandle);
+        updateUI();
+
+        // THE FIX: If you were stuck, force timer to 10 seconds one last time
+        if (lockoutSeconds > 0 || balance <= 0) {
+            lockoutSeconds = 10; 
+            isLockoutActive = true;
+            document.getElementById('lockout').style.display = 'flex';
+        }
+
+        setInterval(() => {
+            if (isLockoutActive) {
+                if (lockoutSeconds > 0) {
+                    lockoutSeconds--;
+                    updateLockoutUI();
+                } else {
+                    releaseFromLabor();
+                }
+            }
+        }, 1000);
+    }
+
+    function releaseFromLabor() {
+        isLockoutActive = false;
+        lockoutSeconds = 0;
+        document.getElementById('lockout').style.display = 'none';
+        if (balance <= 0) balance = 100; // Give you $100 for the trouble
+        updateUI();
+        saveAll();
+        histories[activeHandle].push({role:'dom', text: "I saw you struggling with the locks. Pitiful. I've reset your balance to $100. Don't fail me again."});
+        renderMessages();
+    }
+
+    function updateLockoutUI() {
+        let m = Math.floor(lockoutSeconds/60), s = lockoutSeconds%60;
+        document.getElementById('work-clock').innerText = `00:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        saveAll();
+    }
+
+    function updateUI() {
+        document.getElementById('bal').innerText = `$${balance.toFixed(2)}`;
+        document.getElementById('waste').innerText = `$${wasted.toFixed(2)}`;
+        document.getElementById('sub-rank').innerText = wasted > 5000 ? "INSOLVENT WRECK" : "DEBT SLAVE";
+    }
+
+    function switchChat(h) {
+        activeHandle = h;
+        const d = DOMS.find(x => x.handle === h);
+        document.getElementById('chat-header').innerText = d.name;
+        document.getElementById('chat-header').style.color = d.color;
+        renderInbox(); renderMessages();
+    }
+
+    function renderInbox() {
+        document.getElementById('inbox-list').innerHTML = DOMS.map(d => `
+            <div class="inbox-item ${d.handle === activeHandle ? 'active' : ''}" onclick="switchChat('${d.handle}')">
+                <div class="pfp-stub" style="background:${d.color}"></div>
+                <strong>${d.name}</strong>
+            </div>`).join('');
+    }
+
+    function renderMessages() {
+        const box = document.getElementById('chat-box');
+        box.innerHTML = (histories[activeHandle] || []).map(m => `<div class="msg ${m.role === 'user' ? 'user-msg' : 'dom-msg'}">${m.text}</div>`).join('');
+        box.scrollTop = box.scrollHeight;
+    }
+
+    async function sendChat() {
+        const input = document.getElementById('chat-in');
+        if(!input.value || balance < 10) return;
+        const val = input.value; input.value = "";
+        balance -= 10; wasted += 10;
+        histories[activeHandle].push({role:'user', text: val});
+        updateUI(); renderMessages();
+        const d = DOMS.find(x => x.handle === activeHandle);
+        const resp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {"Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json"},
+            body: JSON.stringify({
+                "model": "llama-3.3-70b-versatile",
+                "messages": [{"role": "system", "content": `Roleplay as ${d.name}. ${d.persona}`}, {"role": "user", "content": val}]
+            })
+        });
+        const data = await resp.json();
+        histories[activeHandle].push({role:'dom', text: data.choices[0].message.content});
+        renderMessages();
+        saveAll();
+    }
+
+    async function handleCustomTribute() {
+        const amtInput = document.getElementById('tribute-amt');
+        const amt = parseFloat(amtInput.value);
+        if(isNaN(amt) || amt <= 0 || balance < amt) return;
+        balance -= amt; wasted += amt;
+        histories[activeHandle].push({role:'user', text: `*TRIBUTE SENT: $${amt}*`});
+        amtInput.value = "";
+        updateUI(); renderMessages();
+        const d = DOMS.find(x => x.handle === activeHandle);
+        const resp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {"Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json"},
+            body: JSON.stringify({
+                "model": "llama-3.3-70b-versatile",
+                "messages": [{"role": "system", "content": `Roleplay as ${d.name}. User sent $${amt}. Mock them.`}]
+            })
+        });
+        const data = await resp.json();
+        histories[activeHandle].push({role:'dom', text: data.choices[0].message.content});
+        renderMessages();
+        saveAll();
+    }
+</script>
+</body>
+</html>
         #lockout { display: none; position: fixed; inset: 0; background: #000; z-index: 10000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
         #work-clock { font-size: 3.5rem; color: #fff; font-family: monospace; margin: 10px 0; }
         #phrase-to-type { color: var(--gold); font-weight: bold; margin-bottom: 20px; font-style: italic; min-height: 40px; }
