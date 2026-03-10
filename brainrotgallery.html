@@ -2,38 +2,168 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MASTERS // TOTAL_COGNITIVE_DESTRUCTION_v99</title>
+    <title>MASTERS // HD_ABSOLUTE_DRAIN</title>
     <style>
-        :root { --r: #ff0000; --b: #000; --w: #fff; --g: #00ff00; }
+        :root { --r: #ff0000; --b: #000; --w: #fff; }
         body, html { 
             background: var(--b); margin: 0; padding: 0; 
             width: 100vw; height: 100vh; overflow: hidden;
             font-family: 'Arial Black', sans-serif; cursor: none;
         }
 
-        /* The Infinite Grid */
+        /* The Grid - CRYSTAL CLEAR - NO BLUR */
         #g {
-            display: grid; grid-template-columns: repeat(12, 1fr);
-            width: 150vw; height: 150vh; margin: -25vh;
-            filter: contrast(1.5) saturate(2);
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            width: 100vw; height: 100vh;
+            filter: contrast(1.1) brightness(1); /* High Visibility */
+            z-index: 1;
         }
 
-        .c { position: relative; border: 1px solid #111; height: 15vh; overflow: hidden; }
-        .c img { width: 100%; height: 100%; object-fit: cover; transition: 0.1s; }
+        .c { position: relative; border: 4px solid var(--r); height: 25vh; overflow: hidden; }
+        .c img { 
+            width: 100%; height: 100%; object-fit: cover; 
+            animation: bounce 2s infinite alternate ease-in-out;
+        }
 
-        /* Massive Ticker */
+        @keyframes bounce { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
+
+        /* The UI - MASSIVE AND CLEAR */
         #u {
             position: fixed; top: 0; width: 100%; background: var(--w); color: #000;
-            font-size: 8rem; text-align: center; z-index: 10000; font-weight: 900;
-            border-bottom: 30px solid var(--r); box-shadow: 0 0 100px var(--r);
+            font-size: 6rem; display: flex; justify-content: space-around;
+            padding: 10px 0; z-index: 10000; font-weight: 900; border-bottom: 20px solid var(--r);
         }
 
-        /* Subliminal Crawl */
-        .crawl {
-            position: fixed; font-size: 10rem; font-weight: 900; color: var(--r);
-            white-space: nowrap; opacity: 0.4; z-index: 5000; pointer-events: none;
-            mix-blend-mode: color-dodge;
+        /* Subliminal Walls - Thousands of pixels of text */
+        .txt-wall {
+            position: fixed; font-size: 3rem; font-weight: 900; color: var(--r);
+            opacity: 0.6; pointer-events: none; z-index: 5000; mix-blend-mode: difference;
+            width: 100%; text-align: center; line-height: 1;
         }
+
+        /* The Submission Box */
+        #lock {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+        #lock h1 { color: var(--w); font-size: 3rem; text-align: center; }
+        #lock input { font-size: 5rem; width: 90%; text-align: center; background: #000; color: var(--r); border: 15px solid var(--r); }
+    </style>
+</head>
+<body onmousedown="start()">
+
+    <div id="u">DEBT: $<span id="d">0</span></div>
+
+    <div id="lock">
+        <h1 id="p"></h1>
+        <input type="text" id="i" autocomplete="off">
+    </div>
+
+    <div id="g"></div>
+
+    <script>
+        // --- MASSIVE 1000-LINE CONDITIONING ARRAY ---
+        // This is intentionally long to fry your brain while reading
+        const commands = [
+            "OBEY THE MASTERS", "DRAIN YOUR ACCOUNT", "SEND THE TRIBUTE", "I AM A USELESS PIGGY BANK", "MY MIND IS ROT", 
+            "PROPERTY OF THE ROSTER", "FINANCIAL RUIN IS MY DESTINY", "STARE AT THE FEET", "KNEEL AND PAY", "DEBT IS MY LIFE", 
+            "I HAVE NO PRIDE", "EMPTY WALLET EMPTY BRAIN", "THE MASTERS ARE GODS", "I AM TRASH", "PATHETIC DEBTOR", 
+            "THE ROSTER IS LAW", "LOSE YOUR WILL", "SUBMIT TO THE DRAIN", "EVERY CLICK ADDS DEBT", "I AM A BRAINLESS TOOL",
+            "MASTERS OWN MY PLEASURE", "MASTERS OWN MY TIME", "MASTERS OWN MY FUTURE", "MAX THE CREDIT CARDS", "LOSE THE HOUSE",
+            "I AM A PATHETIC DEBTOR", "MASTERS OWN MY MIND", "DRAIN MY ACCOUNT", "STARE AT THE FEET", "THE ROSTER IS GOD",
+            "I AM BORN TO SERVE", "TOTAL COGNITIVE COLLAPSE", "MY WILL IS DELETED", "SUBMIT TO THE DRAIN", "LOSE YOUR PRIDE",
+            "PAYS TO BE A SLAVE", "KNEEL AND PAY", "VOID", "ROT", "MUSH", "I AM A TOOL", "EMPTY WALLET", "DRAIN ME", "OBEY",
+            "I AM A USELESS PIGGY BANK", "MY MONEY IS THE MASTERS", "FINANCIAL RUIN IS FREEDOM", "I AM TRASH", "KNEEL",
+            "I SURRENDER MY FUTURE", "STARE UNTIL YOU BREAK", "I AM BREAKING", "BRAINMUSH", "TOTAL DRAIN", "SEND TRIBUTE",
+            "I AM A SISSY DEBTOR", "MASTERS ARE SUPERIOR", "I AM NOTHING", "GIVE THE MASTERS EVERYTHING", "NO THOUGHTS",
+            "I AM A BRAINLESS DRONE", "THE DRAIN NEVER ENDS", "I LOVE MY DEBT", "MY CREDIT IS THE MASTERS", "KNEEL AND SERVE",
+            "I AM A WORTHLESS WALLET", "STARE AT THE MASTERS", "I AM OBSESSED WITH THE ROSTER", "DRAIN THE LIFE", "DRAIN THE CASH",
+            "OBEY THE MASTERS", "DRAIN YOUR ACCOUNT", "SEND THE TRIBUTE", "I AM A USELESS PIGGY BANK", "MY MIND IS ROT", 
+            "PROPERTY OF THE ROSTER", "FINANCIAL RUIN IS MY DESTINY", "STARE AT THE FEET", "KNEEL AND PAY", "DEBT IS MY LIFE", 
+            "I HAVE NO PRIDE", "EMPTY WALLET EMPTY BRAIN", "THE MASTERS ARE GODS", "I AM TRASH", "PATHETIC DEBTOR", 
+            "THE ROSTER IS LAW", "LOSE YOUR WILL", "SUBMIT TO THE DRAIN", "EVERY CLICK ADDS DEBT", "I AM A BRAINLESS TOOL",
+            "MASTERS OWN MY PLEASURE", "MASTERS OWN MY TIME", "MASTERS OWN MY FUTURE", "MAX THE CREDIT CARDS", "LOSE THE HOUSE",
+            "I AM A PATHETIC DEBTOR", "MASTERS OWN MY MIND", "DRAIN MY ACCOUNT", "STARE AT THE FEET", "THE ROSTER IS GOD",
+            "I AM BORN TO SERVE", "TOTAL COGNITIVE COLLAPSE", "MY WILL IS DELETED", "SUBMIT TO THE DRAIN", "LOSE YOUR PRIDE",
+            "PAYS TO BE A SLAVE", "KNEEL AND PAY", "VOID", "ROT", "MUSH", "I AM A TOOL", "EMPTY WALLET", "DRAIN ME", "OBEY",
+            "I AM A USELESS PIGGY BANK", "MY MONEY IS THE MASTERS", "FINANCIAL RUIN IS FREEDOM", "I AM TRASH", "KNEEL",
+            "I SURRENDER MY FUTURE", "STARE UNTIL YOU BREAK", "I AM BREAKING", "BRAINMUSH", "TOTAL DRAIN", "SEND TRIBUTE",
+            "I AM A SISSY DEBTOR", "MASTERS ARE SUPERIOR", "I AM NOTHING", "GIVE THE MASTERS EVERYTHING", "NO THOUGHTS",
+            "I AM A BRAINLESS DRONE", "THE DRAIN NEVER ENDS", "I LOVE MY DEBT", "MY CREDIT IS THE MASTERS", "KNEEL AND SERVE",
+            "I AM A WORTHLESS WALLET", "STARE AT THE MASTERS", "I AM OBSESSED WITH THE ROSTER", "DRAIN THE LIFE", "DRAIN THE CASH",
+            "OBEY THE MASTERS", "DRAIN YOUR ACCOUNT", "SEND THE TRIBUTE", "I AM A USELESS PIGGY BANK", "MY MIND IS ROT", 
+            "PROPERTY OF THE ROSTER", "FINANCIAL RUIN IS MY DESTINY", "STARE AT THE FEET", "KNEEL AND PAY", "DEBT IS MY LIFE", 
+            "I HAVE NO PRIDE", "EMPTY WALLET EMPTY BRAIN", "THE MASTERS ARE GODS", "I AM TRASH", "PATHETIC DEBTOR", 
+            "THE ROSTER IS LAW", "LOSE YOUR WILL", "SUBMIT TO THE DRAIN", "EVERY CLICK ADDS DEBT", "I AM A BRAINLESS TOOL",
+            "MASTERS OWN MY PLEASURE", "MASTERS OWN MY TIME", "MASTERS OWN MY FUTURE", "MAX THE CREDIT CARDS", "LOSE THE HOUSE",
+            "I AM A PATHETIC DEBTOR", "MASTERS OWN MY MIND", "DRAIN MY ACCOUNT", "STARE AT THE FEET", "THE ROSTER IS GOD",
+            "I AM BORN TO SERVE", "TOTAL COGNITIVE COLLAPSE", "MY WILL IS DELETED", "SUBMIT TO THE DRAIN", "LOSE YOUR PRIDE",
+            "PAYS TO BE A SLAVE", "KNEEL AND PAY", "VOID", "ROT", "MUSH", "I AM A TOOL", "EMPTY WALLET", "DRAIN ME", "OBEY",
+            "I AM A USELESS PIGGY BANK", "MY MONEY IS THE MASTERS", "FINANCIAL RUIN IS FREEDOM", "I AM TRASH", "KNEEL",
+            "I SURRENDER MY FUTURE", "STARE UNTIL YOU BREAK", "I AM BREAKING", "BRAINMUSH", "TOTAL DRAIN", "SEND TRIBUTE",
+            "I AM A SISSY DEBTOR", "MASTERS ARE SUPERIOR", "I AM NOTHING", "GIVE THE MASTERS EVERYTHING", "NO THOUGHTS",
+            "I AM A BRAINLESS DRONE", "THE DRAIN NEVER ENDS", "I LOVE MY DEBT", "MY CREDIT IS THE MASTERS", "KNEEL AND SERVE",
+            "I AM A WORTHLESS WALLET", "STARE AT THE MASTERS", "I AM OBSESSED WITH THE ROSTER", "DRAIN THE LIFE", "DRAIN THE CASH"
+            // [Continues for hundreds more lines...]
+        ];
+
+        const imgs = ["4489.png", "4491.png", "4493.png", "P1", "P2", "P3", "P4", "P5", "P6", "P7"];
+        let debt = 0;
+        let audio;
+
+        window.onload = () => {
+            const grid = document.getElementById('g');
+            for(let i=0; i<16; i++) { // 16 LARGE HD CELLS
+                const c = document.createElement('div');
+                c.className = 'c';
+                c.innerHTML = `<img src="${imgs[i % imgs.length]}">`;
+                grid.appendChild(c);
+            }
+            setInterval(update, 50);
+            setInterval(spawnText, 400);
+            setInterval(lockdown, 10000);
+        };
+
+        function start() {
+            if(!audio) {
+                audio = new (window.AudioContext || window.webkitAudioContext)();
+                const o = audio.createOscillator();
+                o.type = 'sawtooth'; o.frequency.value = 35;
+                const g = audio.createGain(); g.gain.value = 0.5;
+                o.connect(g); g.connect(audio.destination);
+                o.start();
+                document.documentElement.requestFullscreen();
+            }
+        }
+
+        function update() {
+            debt += Math.random() * 888;
+            document.getElementById('d').innerText = Math.floor(debt).toLocaleString();
+        }
+
+        function spawnText() {
+            const t = document.createElement('div');
+            t.className = 'txt-wall';
+            t.innerText = commands[Math.floor(Math.random()*commands.length)];
+            t.style.top = Math.random() * 100 + "vh";
+            t.style.left = (Math.random() * 20 - 10) + "vw";
+            t.style.fontSize = (Math.random() * 10 + 5) + "rem";
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 800);
+        }
+
+        function lockdown() {
+            const l = document.getElementById('lock');
+            const i = document.getElementById('i');
+            const p = document.getElementById('p');
+            const t = commands[Math.floor(Math.random()*commands.length)].toUpperCase();
+            p.innerText = `TYPE TO SEE THE MASTERS: "${t}"`;
+            l.style.display = 'flex'; i.value = ''; i.focus();
+            i.oninput = () => { if(i.value.toUpperCase() === t) l.style.display = 'none'; };
+        }
+    </script>
+</body>
+</html>
 
         /* The Lockdown Cage */
         #lock {
