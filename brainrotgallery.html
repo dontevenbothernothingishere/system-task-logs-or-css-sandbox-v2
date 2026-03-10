@@ -2,105 +2,168 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>UNFORGIVABLE_OVERLOAD</title>
+    <title>CRITICAL_SYSTEM_FAILURE // ROSTER_OVERWRITE</title>
     <style>
-        :root { --r: #ff0000; --b: #000; }
+        :root { --r: #ff0000; --b: #000; --w: #fff; --g: #0f0; --y: #ff0; }
         body, html { 
             background: var(--b); margin: 0; padding: 0; 
             width: 100vw; height: 100vh; overflow: hidden;
+            font-family: 'Impact', sans-serif; cursor: none;
         }
 
-        /* The Core Engine - Layered for maximum eye strain */
-        #master-layer {
-            position: fixed; inset: 0;
-            display: grid; grid-template-columns: repeat(4, 1fr);
-            filter: contrast(2) saturate(2);
-            z-index: 1;
+        /* 1. THE DEBT WALL - Thousands of lines of flickering text */
+        #text-wall {
+            position: fixed; inset: 0; z-index: 1; opacity: 0.15;
+            color: var(--r); font-size: 1.2rem; line-height: 0.9;
+            pointer-events: none; word-break: break-all;
         }
 
-        .cell { border: 1px solid #111; height: 25vh; position: relative; overflow: hidden; }
-        .cell img { 
-            width: 100%; height: 100%; object-fit: cover; 
-            opacity: 0.8; mix-blend-mode: screen;
+        /* 2. THE DYNAMIC GRID - GitHub Feed */
+        #grid {
+            position: fixed; inset: 0; display: grid;
+            grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr);
+            z-index: 5; filter: contrast(1.5) saturate(1.5);
+        }
+        .cell { border: 1px solid #222; position: relative; overflow: hidden; }
+        .cell img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.05s; }
+
+        /* 3. THE "GLITCH" OVERLAYS */
+        .glitch-bar {
+            position: fixed; width: 100%; height: 2px; background: var(--w);
+            z-index: 1000; pointer-events: none; opacity: 0.5;
         }
 
-        /* The "Burn" Overlay - Flashes pure white/red to fatigue the optic nerve */
-        #burn {
-            position: fixed; inset: 0; z-index: 1000;
-            pointer-events: none; mix-blend-mode: difference;
-            animation: burn-strobe 0.04s infinite;
-        }
-
-        @keyframes burn-strobe {
-            0% { background: transparent; }
-            50% { background: rgba(255, 0, 0, 0.2); }
-            100% { background: rgba(255, 255, 255, 0.1); }
-        }
-
-        /* High-speed Subliminal Text - Thousands of pixels of bloat */
-        #subliminal {
-            position: fixed; inset: 0; z-index: 2000;
-            display: flex; flex-wrap: wrap; pointer-events: none;
-            font-family: "Arial Black"; font-size: 8rem; color: var(--r);
-            opacity: 0.1; line-height: 0.8; text-transform: uppercase;
-        }
-
-        /* UI - The Tax */
-        #tax-meter {
+        /* 4. THE INTERFACE - Aggressive UI */
+        #ui {
             position: fixed; top: 0; width: 100%; background: var(--r);
-            color: #000; font-size: 4rem; font-weight: 900;
-            text-align: center; z-index: 10000; border-bottom: 10px solid #fff;
+            color: #000; padding: 10px; z-index: 10000;
+            display: flex; justify-content: space-between; font-size: 3rem;
+            border-bottom: 10px solid var(--w); box-shadow: 0 10px 50px var(--r);
         }
+
+        /* 5. THE PUNISHMENT PULSE */
+        #strobe {
+            position: fixed; inset: 0; z-index: 5000; pointer-events: none;
+            mix-blend-mode: difference; opacity: 0;
+        }
+        .flash { animation: strobe-anim 0.03s infinite; }
+        @keyframes strobe-anim { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+        /* 6. POPUP GHOSTS - Random commands that block the view */
+        .popup {
+            position: fixed; padding: 20px; background: var(--w); color: #000;
+            border: 5px solid var(--r); font-size: 2rem; z-index: 8000;
+            animation: drift 2s forwards;
+        }
+        @keyframes drift { from { transform: scale(0.5); opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
+
     </style>
 </head>
-<body onmousedown="intensify()">
+<body onmousemove="resetDecay()" onkeydown="resetDecay()">
 
-    <div id="tax-meter">SENSORY DEBT: $<span id="debt">0</span></div>
-    <div id="subliminal">OBEY OBEY OBEY OBEY OBEY OBEY OBEY OBEY OBEY OBEY OBEY</div>
-    <div id="burn"></div>
-    <div id="master-layer"></div>
+    <div id="text-wall"></div>
+    <div id="ui">
+        <span>SYSTEM_DEBT: $<span id="debt">0</span></span>
+        <span>AUTH_STATUS: <span id="auth">LOCKED</span></span>
+    </div>
+    <div id="strobe"></div>
+    <div id="grid"></div>
 
     <script>
-        // --- YOUR GITHUB REPO ARRAY ---
-        const gh = "https://raw.githubusercontent.com/USER/REPO/main/";
-        const files = ["4489.png", "4491.png", "4493.png"]; // Add your 100+ files here
-
+        // --- CONFIGURATION ---
+        const ghBase = "https://raw.githubusercontent.com/USER/REPO/main/";
+        const images = ["4489.png", "4491.png", "4493.png", "p1.jpg", "p2.jpg"]; // ADD ALL 100+ HERE
+        const commands = ["OBEY", "DRAIN", "SUBMIT", "PUNISH", "KNEEL", "PAY", "VOID", "USER_DELETED"];
+        
         let debt = 0;
+        let activity = 100;
 
-        window.onload = () => {
-            const grid = document.getElementById('master-layer');
+        // --- 1. INITIALIZE THE WALL OF ROT ---
+        function initWall() {
+            const wall = document.getElementById('text-wall');
+            let content = "";
+            for(let i=0; i<5000; i++) {
+                content += commands[Math.floor(Math.random()*commands.length)] + " ";
+            }
+            wall.innerText = content;
+        }
+
+        // --- 2. BUILD THE GRID ---
+        function initGrid() {
+            const grid = document.getElementById('grid');
             for(let i=0; i<16; i++) {
-                grid.innerHTML += `<div class="cell"><img id="img${i}" src="${gh + files[i % files.length]}"></div>`;
+                grid.innerHTML += `<div class="cell"><img id="img${i}" src="${ghBase + images[i % images.length]}"></div>`;
             }
-            setInterval(tick, 30);
-            setInterval(glitch, 80); // Extreme high-speed image swapping
-        };
+        }
 
-        function tick() {
-            debt += 99.99;
+        // --- 3. THE SENSORY ENGINE ---
+        function engine() {
+            debt += 125.50;
+            activity -= 2; // Sight rots constantly
+            
             document.getElementById('debt').innerText = Math.floor(debt).toLocaleString();
-        }
+            
+            const g = document.getElementById('grid');
+            const s = document.getElementById('strobe');
+            const a = document.getElementById('auth');
 
-        function glitch() {
-            // Randomly swap 4 cells at once for maximum disorientation
-            for(let x=0; x<4; x++) {
-                const idx = Math.floor(Math.random() * 16);
-                const pic = files[Math.floor(Math.random() * files.length)];
-                const img = document.getElementById(`img${idx}`);
-                img.src = gh + pic;
-                // Add jitter
-                img.style.transform = `scale(${1 + Math.random() * 0.3}) translate(${(Math.random()-0.5)*20}px)`;
+            // Visual Punishment Logic
+            if (activity < 70) {
+                g.style.filter = `blur(${50 - activity}px) brightness(0.2) grayscale(1)`;
+                a.innerText = "WARNING"; a.style.color = "yellow";
+            } else {
+                g.style.filter = "contrast(1.8) brightness(1.2)";
+                a.innerText = "HD_ACTIVE"; a.style.color = "white";
+            }
+
+            if (activity < 30) {
+                s.classList.add('flash');
+                a.innerText = "REVOKED"; a.style.color = "red";
+            } else {
+                s.classList.remove('flash');
+            }
+
+            if (activity < 0) activity = 0;
+
+            // Random Glitch Bar
+            if (Math.random() > 0.95) {
+                const bar = document.createElement('div');
+                bar.className = 'glitch-bar';
+                bar.style.top = Math.random() * 100 + "vh";
+                document.body.appendChild(bar);
+                setTimeout(() => bar.remove(), 50);
             }
         }
 
-        function intensify() {
-            // Speed up the world on click
-            document.getElementById('burn').style.animationDuration = "0.01s";
-            setTimeout(() => {
-                document.getElementById('burn').style.animationDuration = "0.04s";
-            }, 500);
+        function resetDecay() {
+            activity = 100;
+            if (Math.random() > 0.8) spawnPopup();
         }
+
+        function spawnPopup() {
+            const p = document.createElement('div');
+            p.className = 'popup';
+            p.innerText = commands[Math.floor(Math.random()*commands.length)];
+            p.style.top = Math.random() * 80 + "vh";
+            p.style.left = Math.random() * 80 + "vw";
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 1000);
+            
+            // Force random image swap on interaction
+            const idx = Math.floor(Math.random() * 16);
+            document.getElementById(`img${idx}`).src = ghBase + images[Math.floor(Math.random()*images.length)];
+        }
+
+        // Run everything
+        window.onload = () => {
+            initWall();
+            initGrid();
+            setInterval(engine, 50);
+            setInterval(() => { // High speed jitter
+                const idx = Math.floor(Math.random() * 16);
+                document.getElementById(`img${idx}`).style.transform = `translate(${(Math.random()-0.5)*30}px, ${(Math.random()-0.5)*30}px) scale(1.2)`;
+            }, 100);
+        };
     </script>
 </body>
 </html>
-
