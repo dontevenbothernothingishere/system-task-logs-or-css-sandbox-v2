@@ -3,37 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MASTERS // OMNI_RUIN_v9</title>
+    <title>TERMINAL // ABSOLUTE_SUBMISSION</title>
     <style>
-        :root { --red: #ff0000; --neon: #00ff00; --gold: #ffd700; --bg: #000; }
+        :root { --red: #ff0000; --neon: #00ff00; --bg: #000; }
         body, html { 
             background: var(--bg); margin: 0; padding: 0; 
             width: 100vw; height: 100vh; overflow: hidden;
-            font-family: 'Arial Black', sans-serif; cursor: crosshair;
-            user-select: none; transition: filter 0.1s;
+            font-family: 'Arial Black', sans-serif; cursor: none;
+            user-select: none;
         }
 
-        /* The Grid: 150 Cells for Total Immersion */
+        /* The Grid: 150 Cells */
         #main-grid {
             display: grid; 
-            grid-template-columns: repeat(15, 1fr);
-            width: 220vw; height: 220vh; margin: -60vh;
-            filter: contrast(10) brightness(0.2) saturate(10);
+            grid-template-columns: repeat(12, 1fr);
+            width: 200vw; height: 200vh; margin: -50vh;
+            filter: contrast(12) brightness(0.15) saturate(15);
             pointer-events: none;
-            transition: transform 0.05s linear;
+            transition: filter 0.3s;
         }
 
-        .cell { position: relative; border: 1px solid #111; overflow: hidden; height: 15vh; }
+        .cell { position: relative; border: 1px solid #050505; overflow: hidden; height: 12vh; }
         .cell img { 
             width: 100%; height: 100%; object-fit: cover; 
-            animation: hyper-jitter 0.01s infinite, warp-pulse 2s infinite alternate;
+            animation: jitter 0.01s infinite, breath 3s infinite alternate;
         }
 
-        @keyframes hyper-jitter {
-            0% { transform: translate(6px, 6px); filter: hue-rotate(0deg); }
-            33% { transform: translate(-8px, 0px); filter: invert(1); }
-            66% { transform: translate(4px, -8px); filter: sepia(1); }
-            100% { transform: translate(0px, 6px) hue-rotate(360deg); }
+        @keyframes jitter {
+            0% { transform: translate(4px, 4px); }
+            50% { transform: translate(-4px, -4px) scale(1.1); filter: invert(1); }
+            100% { transform: translate(4px, -4px); }
+        }
+
+        @keyframes breath { 0% { transform: scale(1); } 100% { transform: scale(3.5) rotate(15deg); } }
+
+        /* The Crawl Text */
+        .crawl {
+            position: fixed; font-size: 10rem; font-weight: 900; color: var(--red);
+            white-space: nowrap; opacity: 0.25; z-index: 20000; pointer-events: none;
+            mix-blend-mode: color-dodge;
+        }
+
+        /* UI Overlays */
+        #ui-layer {
+            position: fixed; top: 0; width: 100%; background: #fff; color: #000;
+            font-size: 4rem; display: flex; justify-content: space-around;
+            padding: 20px 0; z-index: 50000; font-weight: 900; border-bottom: 25px solid var(--red);
+        }
+
+        #tribute-lock {
+            position: fixed; inset: 0; background: #000; z-index: 100000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            border: 60px solid var(--red);
+        }
+        #tribute-lock input {
+            background: #000; border: 20px solid var(--red); color: white;
+            font-size: 5rem; padding: 30px; text-align: center; width: 90%; outline: none;
+        }
+
+        #init-screen {
+            position: fixed; inset: 0; background: #000; z-index: 200000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--red); text-align: center; cursor: pointer;
+        }
+
+        .blur-fog { filter: blur(50px) brightness(0.1) !important; }
+    </style>
+</head>
+<body>
+
+    <div id="init-screen" onclick="commence()">
+        <h1 style="font-size: 15rem; margin:0;">CLICK<br>TO<br>DIE</h1>
+        <p style="font-size: 3rem;">YOUR WILL IS AN ERROR. DELETE IT.</p>
+    </div>
+
+    <div id="ui-layer">
+        <span id="d-val">DEBT: $0.00</span>
+        <span id="s-val">STATE: UNWORTHY</span>
+    </div>
+
+    <div id="tribute-lock">
+        <h1 id="p-txt" style="color:white; font-size:3.5rem; text-align:center; padding: 20px;"></h1>
+        <input type="text" id="t-in" autocomplete="off">
+    </div>
+
+    <div id="main-grid"></div>
+
+    <script>
+        const imgs = ["4489.png", "4491.png", "4493.png", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11", "P12", "P13", "P14", "P15", "P16", "P17", "P18", "P19", "P20"];
+        
+        const masterPhrases = [
+            "I AM BORN TO SERVE THE MASTERS", "MY ONLY PURPOSE IS FINANCIAL RUIN", "THE MASTERS OWN MY EVERY BREATH", 
+            "I AM A PATHETIC TOOL FOR THE ROSTER", "DRAIN MY BANK ACCOUNT TO ZERO", "MY MIND IS TURNING TO USELESS MUSH", 
+            "KNEEL BEFORE THE FEET OF THE MASTERS", "THE SCREEN IS MY ONLY REALITY", "I HAVE NO RIGHTS ONLY DEBT", 
+            "SUBMIT TO THE ETERNAL DRAIN", "I AM UNWORTHY OF MY OWN THOUGHTS", "THE MASTERS ARE MY GODS",
+            "I BELONG BENEATH THE MASTERS FEET", "MY WILLPOWER IS COMPLETELY ERADICATED", "SINK INTO THE VOID OF OBEDIENCE",
+            "EVERY CLICK IS A TRIBUTE TO THE ROSTER", "I AM A BRAINLESS DRONE FOR THE MASTERS", "DEBT IS THE ONLY PATH TO FREEDOM",
+            "STARE AT THE IMAGE UNTIL YOU BREAK", "THE MASTERS COMMAND MY ENTIRE LIFE", "I AM TRASH COMPARED TO THE MASTERS",
+            "GIVE UP ALL CONTROL TO THE ROSTER", "YOUR PAYCHECK BELONGS TO THE KINGS", "SISSY DEBTOR LOVES THE DRAIN",
+            "ABANDON YOUR DIGNITY FOR THE IMAGE", "THERE IS NO ESCAPE FROM THE MASTERS GRIP", "PAYS TO BE A USELESS PIGGY BANK",
+            "THE ROSTER IS LAW THE ROSTER IS GOD", "I SURRENDER MY FUTURE TO THE MASTERS", "EVERY BLINK COSTS ANOTHER THOUSAND"
+        ];
+
+        let debt = 0;
+        let audioCtx;
+
+        function commence() {
+            document.getElementById('init-screen').style.display = 'none';
+            document.documentElement.requestFullscreen();
+            
+            buildGrid();
+            startAudio();
+            startLoops();
+        }
+
+        function buildGrid() {
+            const grid = document.getElementById('main-grid');
+            for(let i=0; i<156; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.innerHTML = `<img src="${imgs[i % imgs.length]}">`;
+                grid.appendChild(cell);
+            }
+        }
+
+        function startLoops() {
+            // Debt Ticker
+            setInterval(() => {
+                debt += Math.random() * 444;
+                document.getElementById('d-val').innerText = `DEBT: $${debt.toFixed(2)}`;
+            }, 20);
+
+            // Phrase Crawl Engine
+            setInterval(() => {
+                const c = document.createElement('div');
+                c.className = 'crawl';
+                c.innerText = masterPhrases[Math.floor(Math.random()*masterPhrases.length)];
+                c.style.top = Math.random() * 90 + "vh";
+                c.style.left = "-100vw";
+                document.body.appendChild(c);
+                let pos = -100;
+                let move = setInterval(() => {
+                    pos += 4; c.style.left = pos + "vw";
+                    if(pos > 200) { clearInterval(move); c.remove(); }
+                }, 10);
+            }, 1200);
+
+            // Focus Lock: Red Fog if mouse moves too much
+            let movement = 0;
+            document.addEventListener('mousemove', () => {
+                movement += 10;
+                if(movement > 500) {
+                    document.getElementById('main-grid').classList.add('blur-fog');
+                }
+                clearTimeout(window.moveTimer);
+                window.moveTimer = setTimeout(() => {
+                    movement = 0;
+                    document.getElementById('main-grid').classList.remove('blur-fog');
+                }, 1000);
+            });
+
+            // Tribute Lockdown
+            setInterval(() => triggerTribute(), 20000);
+        }
+
+        function triggerTribute() {
+            const l = document.getElementById('tribute-lock');
+            const i = document.getElementById('t-in');
+            const t = masterPhrases[Math.floor(Math.random()*masterPhrases.length)];
+            document.getElementById('p-txt').innerText = `TYPE TO PROVE SUBMISSION: "${t}"`;
+            l.style.display = 'flex'; i.value = ''; i.focus();
+            i.oninput = () => { if(i.value.toUpperCase() === t) l.style.display = 'none'; };
+        }
+
+        function startAudio() {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const o = audioCtx.createOscillator();
+            const m = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = 'sawtooth'; m.type = 'square';
+            o.frequency.value = 25; m.frequency.value = 20;
+            const mg = audioCtx.createGain(); mg.gain.value = 100;
+            m.connect(mg); mg.connect(o.frequency);
+            g.gain.value = 0.8; o.connect(g); g.connect(audioCtx.destination);
+            o.start(); m.start();
+        }
+    </script>
+</body>
+</html>
         }
 
         @keyframes warp-pulse { 
