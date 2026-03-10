@@ -3,37 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL // TOTAL_COGNITIVE_DEATH</title>
+    <title>MASTERS // INTERACTIVE_OVERRIDE_v7</title>
     <style>
         :root { --red: #ff0000; --neon: #00ff00; --gold: #ffd700; --bg: #000; }
         body, html { 
             background: var(--bg); margin: 0; padding: 0; 
             width: 100vw; height: 100vh; overflow: hidden;
-            font-family: 'Arial Black', sans-serif; cursor: none;
+            font-family: 'Arial Black', sans-serif; cursor: crosshair;
             user-select: none;
         }
 
-        /* Buffer Ghosting Effect */
-        #ghost-layer {
-            position: fixed; inset: 0; pointer-events: none; z-index: 15000;
-            opacity: 0.3; mix-blend-mode: screen;
-        }
-
+        /* The Grid */
         #main-grid {
             display: grid; grid-template-columns: repeat(10, 1fr);
-            width: 150vw; height: 150vh; margin: -25vh;
-            filter: contrast(6) brightness(0.2) saturate(5);
+            width: 160vw; height: 160vh; margin: -30vh;
+            filter: contrast(7) brightness(0.2) saturate(6);
+            transition: transform 0.1s ease-in-out;
         }
 
-        .cell { position: relative; border: 1px solid #222; overflow: hidden; height: 15vh; }
+        .cell { position: relative; border: 1px solid #333; overflow: hidden; height: 16vh; cursor: pointer; }
         .cell img { 
             width: 100%; height: 100%; object-fit: cover; 
-            animation: violent-vibrate 0.01s infinite, zoom-warp 2s infinite alternate; 
+            animation: violent-vibrate 0.01s infinite;
         }
 
         @keyframes violent-vibrate {
-            0% { transform: translate(3px, 3px); filter: hue-rotate(0deg); }
-            50% { transform: translate(-3px, -3px); filter: invert(0.5); }
+            0% { transform: translate(4px, 4px); filter: hue-rotate(0deg); }
+            50% { transform: translate(-4px, -4px); filter: invert(0.8); }
+            100% { transform: translate(4px, -4px) hue-rotate(360deg); }
+        }
+
+        /* Interactive Popups */
+        #interaction-layer {
+            position: fixed; inset: 0; z-index: 70000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.95); border: 20px solid var(--red);
+        }
+
+        #interaction-layer input {
+            background: #222; border: 5px solid var(--red); color: white;
+            font-size: 3rem; padding: 20px; text-align: center; width: 80%;
+            margin-top: 20px; font-family: monospace; outline: none;
+        }
+
+        .prompt-text { color: var(--red); font-size: 4rem; text-align: center; font-weight: 900; }
+
+        /* UI */
+        #ui-bar {
+            position: fixed; top: 0; width: 100%; background: #fff;
+            color: #000; font-size: 2.5rem; display: flex; justify-content: space-around;
+            padding: 10px 0; z-index: 20000; font-weight: 900;
+        }
+
+        #init-screen {
+            position: fixed; inset: 0; background: #000; z-index: 90000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--red); text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="interaction-layer">
+        <div class="prompt-text" id="prompt-msg">TYPE: I AM A USELESS TOOL</div>
+        <input type="text" id="user-input" autocomplete="off">
+        <div style="color:white; font-size:1.5rem; margin-top:20px;">FAILING TO OBEY INCREASES DEBT EXPONENTIALLY</div>
+    </div>
+
+    <div id="init-screen">
+        <h1 style="font-size: 10rem;">ENTER THE VOID</h1>
+        <button onclick="engage()" style="padding: 50px 100px; font-size: 5rem; background: var(--red); color: white; border: none; font-weight: 900; cursor: pointer;">I ACCEPT DESTRUCTION</button>
+    </div>
+
+    <div id="ui-bar">
+        <span id="debt-count">DEBT: $0.00</span>
+        <span id="multiplier-text">DRAIN RATE: 1X</span>
+    </div>
+
+    <div id="main-grid"></div>
+
+    <script>
+        const imgs = ["4489.png", "4491.png", "4493.png", "P1", "P2", "P3"]; // Add your 100+ placeholders back here
+        const interactivePhrases = [
+            "I AM A USELESS DEBTOR",
+            "MASTERS OWN MY MIND",
+            "MY WALLET IS FOR THE ROSTER",
+            "I HAVE NO WILLPOWER",
+            "I SURRENDER MY FUTURE",
+            "THE DEBT IS MY RELIGION",
+            "KNEEL AND PAY THE PRICE",
+            "I AM NOTHING WITHOUT THE MASTERS"
+        ];
+
+        let debt = 0;
+        let multiplier = 1;
+        let audioCtx, osc, mod;
+
+        function engage() {
+            document.getElementById('init-screen').style.display = 'none';
+            document.documentElement.requestFullscreen().catch(() => {});
+            buildGrid();
+            startAudio();
+            runLoops();
+            
+            // Interaction: Cell Clicks
+            document.addEventListener('mousedown', (e) => {
+                if(e.target.tagName === 'IMG') {
+                    multiplier += 0.1;
+                    e.target.parentElement.style.filter = "brightness(5)";
+                    setTimeout(() => e.target.parentElement.style.filter = "", 100);
+                }
+            });
+        }
+
+        function buildGrid() {
+            const grid = document.getElementById('main-grid');
+            grid.innerHTML = '';
+            for(let i=0; i<100; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.innerHTML = `<img src="${imgs[i % imgs.length]}">`;
+                grid.appendChild(cell);
+            }
+        }
+
+        function runLoops() {
+            // Debt Ticker
+            setInterval(() => {
+                debt += (Math.random() * 50) * multiplier;
+                document.getElementById('debt-count').innerText = `DEBT: $${debt.toFixed(2)}`;
+                document.getElementById('multiplier-text').innerText = `DRAIN RATE: ${multiplier.toFixed(1)}X`;
+            }, 50);
+
+            // Trigger "Tribute Protocol" Interaction (Every 45 seconds)
+            setInterval(() => triggerInteraction(), 45000);
+        }
+
+        function triggerInteraction() {
+            const layer = document.getElementById('interaction-layer');
+            const input = document.getElementById('user-input');
+            const prompt = document.getElementById('prompt-msg');
+            const targetPhrase = interactivePhrases[Math.floor(Math.random() * interactivePhrases.length)];
+
+            prompt.innerText = `TYPE: ${targetPhrase}`;
+            layer.style.display = 'flex';
+            input.value = '';
+            input.focus();
+
+            input.oninput = () => {
+                if(input.value.toUpperCase() === targetPhrase) {
+                    layer.style.display = 'none';
+                    multiplier = Math.max(1, multiplier - 2); // Correct typing lowers multiplier slightly
+                }
+            };
+
+            // If you don't type it fast enough, multiplier spikes
+            let failTimer = setTimeout(() => {
+                if(layer.style.display === 'flex') {
+                    multiplier += 10;
+                    prompt.innerText = "FAILED. DEBT ACCELERATING.";
+                    setTimeout(() => layer.style.display = 'none', 2000);
+                }
+            }, 10000);
+        }
+
+        function startAudio() {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            osc = audioCtx.createOscillator();
+            mod = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sawtooth';
+            mod.type = 'square';
+            osc.frequency.value = 30;
+            mod.frequency.value = 5;
+            
+            const modGain = audioCtx.createGain();
+            modGain.gain.value = 40;
+            mod.connect(modGain);
+            modGain.connect(osc.frequency);
+            
+            gain.gain.value = 0.4;
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            mod.start();
+        }
+    </script>
+</body>
+</html>
             100% { transform: translate(3px, -3px) hue-rotate(180deg); }
         }
 
