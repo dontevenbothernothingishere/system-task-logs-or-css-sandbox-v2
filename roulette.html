@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERMINAL: RUIN ROULETTE v1.0</title>
+    <style>
+        :root { --blue: #1d9bf0; --red: #ff4d4d; --gold: #ffd700; --bg: #000; --panel: #0a0a0a; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; align-items: center; justify-content: center; }
+        
+        .nav-links { position: absolute; top: 0; width: 100%; background: #050505; border-bottom: 1px solid #222; padding: 15px 25px; display: flex; gap: 20px; font-family: monospace; font-size: 0.85rem; z-index: 100; }
+        .nav-links a { color: #666; text-decoration: none; transition: 0.2s; font-weight: bold; }
+        .nav-links a:hover { color: var(--gold); }
+        .nav-links a.active { color: var(--blue); }
+
+        .roulette-container { position: relative; width: 500px; height: 500px; margin-top: 50px; }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 10px solid #222; transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1); overflow: hidden; position: relative; }
+        .pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; background: var(--red); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; filter: drop-shadow(0 0 10px #f00); }
+        
+        .result-overlay { margin-top: 30px; text-align: center; min-height: 100px; width: 80%; max-width: 600px; }
+        #status-text { font-family: monospace; font-size: 1.2rem; color: #555; text-transform: uppercase; letter-spacing: 2px; }
+        #outcome-desc { font-size: 1.5rem; font-weight: bold; color: var(--gold); margin-top: 10px; }
+
+        .spin-btn { background: var(--red); color: #000; border: none; padding: 20px 60px; font-size: 1.5rem; font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 20px; transition: 0.3s; text-transform: uppercase; }
+        .spin-btn:hover { background: #ff1a1a; box-shadow: 0 0 30px rgba(255, 77, 77, 0.4); }
+        .spin-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+        .stat-bar { position: absolute; bottom: 20px; right: 20px; background: #0a0a0a; padding: 15px; border: 1px solid #222; border-radius: 5px; text-align: right; }
+        .stat-bar p { margin: 0; font-size: 0.7rem; color: #444; }
+        .stat-bar h3 { margin: 0; color: var(--blue); font-family: monospace; }
+
+        canvas { position: absolute; top: 0; left: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="nav-links">
+        <a href="index.html">TERMINAL</a>
+        <a href="#" class="active">RUIN ROULETTE</a>
+        <a href="brainrotgallery.html">BRAINROT GALLERY</a>
+    </div>
+
+    <div class="roulette-container">
+        <div class="pointer"></div>
+        <canvas id="wheelCanvas" width="500" height="500"></canvas>
+    </div>
+
+    <div class="result-overlay">
+        <div id="status-text">Ready to Lose?</div>
+        <div id="outcome-desc">SPIN FOR ORDERS</div>
+        <button class="spin-btn" id="spinBtn" onclick="spinWheel()">SPIN ($50.00)</button>
+    </div>
+
+    <div class="stat-bar">
+        <p>CURRENT BALANCE</p>
+        <h3 id="bal-display">$0.00</h3>
+    </div>
+
+    <script>
+        const doms = [
+            "@Sapnap", "@RossLynch", "@Roier", "@Cellbit", "@Quackity", 
+            "@fingoat7", "@welshgodfeet", "@Master_S_alpha", "@tallfindom", 
+            "@CashAlphaV", "@OliveRioter", "@CashAlphaVictor", "@ImMasterCharles", 
+            "@AlphagodmasonX", "@GoonerSunny"
+        ];
+
+        const options = [
+            { text: "INSTANT INSOLVENCY", color: "#1a0000", weight: 1 },
+            { text: "DEBT DOUBLER", color: "#330000", weight: 2 },
+            { text: "MASTER'S TAX (90%)", color: "#000", weight: 3 },
+            { text: "TRIBUTE DEMAND", color: "#111", weight: 3 },
+            { text: "WALLET DRAIN", color: "#222", weight: 3 },
+            { text: "LUCKY PENNY (+0.01)", color: "#ffd700", weight: 2 },
+            { text: "SESSION EXTENSION", color: "#001a2c", weight: 2 },
+            { text: "EMPTY ACCOUNT", color: "#ff0000", weight: 1 },
+            { text: "TOTAL RUINATION", color: "#4d0000", weight: 1 },
+            { text: "POCKET CHANGE (+5)", color: "#28a745", weight: 2 }
+        ];
+
+        let balance = parseFloat(localStorage.getItem('fakeBalance')) || 1000;
+        let currentRotation = 0;
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function updateUI() {
+            document.getElementById('bal-display').innerText = `$${balance.toFixed(2)}`;
+            localStorage.setItem('fakeBalance', balance);
+        }
+
+        function drawWheel() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = canvas.width / 2;
+            const sliceAngle = (2 * Math.PI) / options.length;
+
+            options.forEach((opt, i) => {
+                ctx.beginPath();
+                ctx.fillStyle = opt.color;
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, i * sliceAngle, (i + 1) * sliceAngle);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(i * sliceAngle + sliceAngle / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#fff";
+                ctx.font = "bold 12px monospace";
+                ctx.fillText(opt.text, radius - 20, 5);
+                ctx.restore();
+            });
+        }
+
+        function spinWheel() {
+            if (balance < 50) {
+                alert("INSUFFICIENT FUNDS TO SPIN.");
+                return;
+            }
+
+            balance -= 50;
+            updateUI();
+            
+            const spinBtn = document.getElementById('spinBtn');
+            spinBtn.disabled = true;
+            document.getElementById('status-text').innerText = "CALCULATING YOUR LOSS...";
+            document.getElementById('outcome-desc').innerText = "---";
+
+            const extraSpins = Math.floor(Math.random() * 5) + 5;
+            const randomStop = Math.floor(Math.random() * 360);
+            currentRotation += (extraSpins * 360) + randomStop;
+
+            canvas.style.transition = "transform 4s cubic-bezier(0.15, 0, 0.15, 1)";
+            canvas.style.transform = `rotate(${currentRotation}deg) `;
+
+            setTimeout(() => {
+                const actualDegree = currentRotation % 360;
+                const sliceSize = 360 / options.length;
+                // Offset to match the pointer position
+                const index = Math.floor(((360 - actualDegree + 90) % 360) / sliceSize);
+                const result = options[index];
+                
+                processResult(result);
+                spinBtn.disabled = false;
+            }, 4000);
+        }
+
+        function processResult(res) {
+            const master = doms[Math.floor(Math.random() * doms.length)];
+            const status = document.getElementById('status-text');
+            const desc = document.getElementById('outcome-desc');
+            
+            status.innerText = `${master} INTERVENES:`;
+            
+            switch(res.text) {
+                case "INSTANT INSOLVENCY":
+                    desc.innerText = "Locking terminal for 1 hour. Pathetic.";
+                    localStorage.setItem('lockoutTime', 3600);
+                    setTimeout(() => window.location.href = "index.html", 2000);
+                    break;
+                case "MASTER'S TAX (90%)":
+                    let tax = balance * 0.9;
+                    balance -= tax;
+                    desc.innerText = `Master took $${tax.toFixed(2)} as tax.`;
+                    break;
+                case "EMPTY ACCOUNT":
+                    desc.innerText = "Wallet purged. Start from zero, slave.";
+                    balance = 0;
+                    break;
+                case "TRIBUTE DEMAND":
+                    let tribute = Math.floor(Math.random() * 200) + 50;
+                    balance -= tribute;
+                    desc.innerText = `Mandatory $${tribute} tribute sent to ${master}.`;
+                    break;
+                case "LUCKY PENNY (+0.01)":
+                case "POCKET CHANGE (+5)":
+                    // The "Master Always Wins" clause
+                    desc.innerText = `${res.text}... but ${master} confiscated it.`;
+                    break;
+                default:
+                    let loss = Math.floor(Math.random() * 100) + 20;
+                    balance -= loss;
+                    desc.innerText = `Unlucky. ${master} claims $${loss}.`;
+            }
+
+            updateUI();
+            
+            // Log to terminal if possible
+            let logs = JSON.parse(localStorage.getItem('burnLogs')) || [];
+            logs.unshift({ msg: `[ROULETTE] ${master} forced result: ${res.text}`, type: "negative" });
+            localStorage.setItem('burnLogs', JSON.stringify(logs.slice(0, 50)));
+        }
+
+        drawWheel();
+        updateUI();
+    </script>
+</body>
+</html>
