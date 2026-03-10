@@ -3,37 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MASTERS // INTERACTIVE_OVERRIDE_v7</title>
+    <title>MASTERS // OMNI_RUIN_v9</title>
     <style>
         :root { --red: #ff0000; --neon: #00ff00; --gold: #ffd700; --bg: #000; }
         body, html { 
             background: var(--bg); margin: 0; padding: 0; 
             width: 100vw; height: 100vh; overflow: hidden;
             font-family: 'Arial Black', sans-serif; cursor: crosshair;
-            user-select: none;
+            user-select: none; transition: filter 0.1s;
         }
 
-        /* The Grid */
+        /* The Grid: 150 Cells for Total Immersion */
         #main-grid {
-            display: grid; grid-template-columns: repeat(10, 1fr);
-            width: 160vw; height: 160vh; margin: -30vh;
-            filter: contrast(7) brightness(0.2) saturate(6);
-            transition: transform 0.1s ease-in-out;
+            display: grid; 
+            grid-template-columns: repeat(15, 1fr);
+            width: 220vw; height: 220vh; margin: -60vh;
+            filter: contrast(10) brightness(0.2) saturate(10);
+            pointer-events: none;
+            transition: transform 0.05s linear;
         }
 
-        .cell { position: relative; border: 1px solid #333; overflow: hidden; height: 16vh; cursor: pointer; }
+        .cell { position: relative; border: 1px solid #111; overflow: hidden; height: 15vh; }
         .cell img { 
             width: 100%; height: 100%; object-fit: cover; 
-            animation: violent-vibrate 0.01s infinite;
+            animation: hyper-jitter 0.01s infinite, warp-pulse 2s infinite alternate;
         }
 
-        @keyframes violent-vibrate {
-            0% { transform: translate(4px, 4px); filter: hue-rotate(0deg); }
-            50% { transform: translate(-4px, -4px); filter: invert(0.8); }
-            100% { transform: translate(4px, -4px) hue-rotate(360deg); }
+        @keyframes hyper-jitter {
+            0% { transform: translate(6px, 6px); filter: hue-rotate(0deg); }
+            33% { transform: translate(-8px, 0px); filter: invert(1); }
+            66% { transform: translate(4px, -8px); filter: sepia(1); }
+            100% { transform: translate(0px, 6px) hue-rotate(360deg); }
         }
 
-        /* Interactive Popups */
+        @keyframes warp-pulse { 
+            0% { transform: scale(1.1) rotate(-5deg); } 
+            100% { transform: scale(4.5) rotate(25deg); } 
+        }
+
+        /* Subliminal Crawl Layer */
+        #subliminal-layer {
+            position: fixed; inset: 0; pointer-events: none; z-index: 15000;
+        }
+        .crawl-text {
+            position: absolute; font-size: 12rem; font-weight: 900; color: var(--red);
+            white-space: nowrap; opacity: 0.2; mix-blend-mode: difference;
+        }
+
+        /* Ego Mirror (Webcam) */
+        #webcam-box {
+            position: fixed; bottom: 20px; right: 20px; width: 300px; height: 200px;
+            border: 10px solid var(--red); z-index: 60000; background: #000;
+            filter: contrast(3) grayscale(1) invert(1); transform: rotate(-5deg);
+        }
+        #webcam-box video { width: 100%; height: 100%; object-fit: cover; }
+
+        /* UI Ticker */
+        #ui-layer {
+            position: fixed; top: 0; width: 100%; background: #fff; color: #000;
+            font-size: 4rem; display: flex; justify-content: space-around;
+            padding: 20px 0; z-index: 80000; font-weight: 900; border-bottom: 20px solid var(--red);
+        }
+
+        #tribute-popup {
+            position: fixed; inset: 0; background: rgba(0,0,0,1); z-index: 100000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            border: 50px solid var(--red);
+        }
+        #tribute-popup input {
+            background: #000; border: 15px solid var(--red); color: white;
+            font-size: 5rem; padding: 40px; text-align: center; width: 95%; outline: none;
+        }
+
+        #init-screen {
+            position: fixed; inset: 0; background: #000; z-index: 200000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--red); text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="subliminal-layer"></div>
+    <div id="webcam-box"><video id="v" autoplay muted></video></div>
+
+    <div id="init-screen">
+        <h1 style="font-size: 15rem; line-height: 0.7;">TOTAL<br>RUIN</h1>
+        <button id="commence" onclick="initiate()" style="padding: 80px 160px; font-size: 8rem; background: var(--red); color: white; border: none; font-weight: 900; cursor: pointer;">OBEY</button>
+    </div>
+
+    <div id="ui-layer">
+        <span id="d-val">DEBT: $0.00</span>
+        <span id="s-val">BRAIN STATE: FRYING</span>
+    </div>
+
+    <div id="tribute-popup">
+        <h1 id="p-txt" style="color:white; font-size:4rem; text-align:center;"></h1>
+        <input type="text" id="t-in" autocomplete="off">
+    </div>
+
+    <div id="main-grid"></div>
+
+    <script>
+        const imgs = ["4489.png", "4491.png", "4493.png", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11", "P12", "P13", "P14", "P15", "P16", "P17", "P18", "P19", "P20", "P21", "P22", "P23", "P24", "P25", "P26", "P27", "P28", "P29", "P30", "P31", "P32", "P33", "P34", "P35", "P36", "P37", "P38", "P39", "P40"];
+        
+        const mastersPhrases = [
+            "THE MASTERS COMMAND YOUR PLEASURE", "EVERY STROKE ADDS TO THE DEBT", "YOUR BRAIN IS TURNING TO LIQUID", "DRAIN THE BANK ACCOUNT DRAIN THE MIND", "PROPERTY OF THE ROSTER PERMANENTLY", "KNEEL AND SERVE THE SCREEN", "A PATHETIC DEBTOR WITH NO WILL", "STARE AT THE FEET FORGET YOUR NAME", "BORN TO BE A USELESS TRIBUTE PIG", "SUBMIT SUBMIT SUBMIT SUBMIT SUBMIT", "THE DEBT IS YOUR ONLY GOD NOW", "YOU ARE A TOOL FOR THE MASTERS", "GIVE UP ALL FINANCIAL CONTROL", "SINK INTO THE VOID OF SUBMISSION", "NO THOUGHTS JUST THE ROSTER", "MASTERS RULE YOUR EVERY URGE", "THE IMAGE IS THE MASTER THE IMAGE IS GOD", "ABANDON HUMANITY EMBRACE THE DRAIN"
+        ];
+
+        let debt = 0;
+        let fryLevel = 0;
+
+        function initiate() {
+            document.getElementById('init-screen').style.display = 'none';
+            document.documentElement.requestFullscreen().catch(() => {});
+            
+            // Start Webcam
+            navigator.mediaDevices.getUserMedia({video:true}).then(s=>{document.getElementById('v').srcObject=s;});
+
+            buildGrid();
+            startAudio();
+            startChaos();
+        }
+
+        function buildGrid() {
+            const grid = document.getElementById('main-grid');
+            for(let i=0; i<150; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.innerHTML = `<img src="${imgs[i % imgs.length]}">`;
+                grid.appendChild(cell);
+            }
+        }
+
+        function startChaos() {
+            // Mouse Response
+            document.addEventListener('mousemove', (e) => {
+                let x = (e.clientX / window.innerWidth - 0.5) * 100;
+                let y = (e.clientY / window.innerHeight - 0.5) * 100;
+                document.getElementById('main-grid').style.transform = `translate(${x}px, ${y}px) rotate(${x/10}deg)`;
+            });
+
+            // Click Debt Spike
+            document.addEventListener('mousedown', () => {
+                debt += 1000;
+                fryLevel += 1;
+                document.body.style.filter = `invert(1) contrast(${10 + fryLevel})`;
+                setTimeout(() => document.body.style.filter = `contrast(${10 + fryLevel})`, 50);
+            });
+
+            // Subliminal Engine
+            setInterval(() => {
+                const c = document.createElement('div');
+                c.className = 'crawl-text';
+                c.innerText = mastersPhrases[Math.floor(Math.random()*mastersPhrases.length)];
+                c.style.top = Math.random() * 100 + "vh";
+                c.style.left = "-150vw";
+                document.getElementById('subliminal-layer').appendChild(c);
+                let p = -150;
+                let m = setInterval(() => {
+                    p += 10; c.style.left = p + "vw";
+                    if(p > 200) { clearInterval(m); c.remove(); }
+                }, 10);
+            }, 1500);
+
+            // Ticker & Lockdown
+            setInterval(() => {
+                debt += Math.random() * 200;
+                document.getElementById('d-val').innerText = `DEBT: $${debt.toFixed(2)}`;
+            }, 30);
+            
+            setInterval(() => triggerTribute(), 25000);
+        }
+
+        function triggerTribute() {
+            const p = document.getElementById('tribute-popup');
+            const i = document.getElementById('t-in');
+            const t = mastersPhrases[Math.floor(Math.random()*mastersPhrases.length)];
+            document.getElementById('p-txt').innerText = `TYPE TO SERVE: "${t}"`;
+            p.style.display = 'flex'; i.value = ''; i.focus();
+            i.oninput = () => { if(i.value.toUpperCase() === t) p.style.display = 'none'; };
+        }
+
+        function startAudio() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const o = ctx.createOscillator();
+            const m = ctx.createOscillator();
+            const g = ctx.createGain();
+            o.type = 'sawtooth'; m.type = 'square';
+            o.frequency.value = 22; m.frequency.value = 18;
+            const mg = ctx.createGain(); mg.gain.value = 80;
+            m.connect(mg); mg.connect(o.frequency);
+            g.gain.value = 0.7; o.connect(g); g.connect(ctx.destination);
+            o.start(); m.start();
+        }
+    </script>
+</body>
+</html>
         #interaction-layer {
             position: fixed; inset: 0; z-index: 70000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
