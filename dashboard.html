@@ -230,9 +230,6 @@
         const input = document.getElementById('chat-in'); 
         if(!input.value) return;
         
-        let tax = 10;
-        if(balance < tax) { addLog("INSUFFICIENT FUNDS", "negative"); return; }
-        
         const text = input.value; 
         balance -= tax; wasted += tax;
         histories[activeHandle].push({ role: 'user', text: text });
