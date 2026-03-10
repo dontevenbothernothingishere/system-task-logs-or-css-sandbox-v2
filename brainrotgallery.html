@@ -3,87 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL // ABSOLUTE_SUBMISSION</title>
+    <title>MASTERS // ZERO_PERMISSION_ZONE</title>
     <style>
-        :root { --red: #ff0000; --neon: #00ff00; --bg: #000; }
+        :root { --red: #ff0000; --bg: #000; }
         body, html { 
             background: var(--bg); margin: 0; padding: 0; 
             width: 100vw; height: 100vh; overflow: hidden;
             font-family: 'Arial Black', sans-serif; cursor: none;
-            user-select: none;
         }
 
-        /* The Grid: 150 Cells */
+        /* 200 Cell Grid - Forced Chaos */
         #main-grid {
             display: grid; 
-            grid-template-columns: repeat(12, 1fr);
-            width: 200vw; height: 200vh; margin: -50vh;
-            filter: contrast(12) brightness(0.15) saturate(15);
+            grid-template-columns: repeat(15, 1fr);
+            width: 250vw; height: 250vh; margin: -75vh;
+            filter: contrast(15) brightness(0.1) saturate(20);
             pointer-events: none;
-            transition: filter 0.3s;
         }
 
-        .cell { position: relative; border: 1px solid #050505; overflow: hidden; height: 12vh; }
+        .cell { position: relative; border: 1px solid #0a0a0a; overflow: hidden; height: 10vh; }
         .cell img { 
             width: 100%; height: 100%; object-fit: cover; 
-            animation: jitter 0.01s infinite, breath 3s infinite alternate;
+            animation: glitch 0.01s infinite, warp 1s infinite alternate;
         }
 
-        @keyframes jitter {
-            0% { transform: translate(4px, 4px); }
-            50% { transform: translate(-4px, -4px) scale(1.1); filter: invert(1); }
-            100% { transform: translate(4px, -4px); }
+        @keyframes glitch {
+            0% { transform: translate(10px, 10px); filter: invert(0); }
+            50% { transform: translate(-10px, -10px); filter: invert(1); }
+            100% { transform: translate(10px, -10px); }
         }
 
-        @keyframes breath { 0% { transform: scale(1); } 100% { transform: scale(3.5) rotate(15deg); } }
+        @keyframes warp { 0% { transform: scale(1); } 100% { transform: scale(5) rotate(45deg); } }
 
-        /* The Crawl Text */
+        /* Rapid Crawl Phrases */
         .crawl {
-            position: fixed; font-size: 10rem; font-weight: 900; color: var(--red);
-            white-space: nowrap; opacity: 0.25; z-index: 20000; pointer-events: none;
-            mix-blend-mode: color-dodge;
+            position: fixed; font-size: 15rem; font-weight: 900; color: var(--red);
+            white-space: nowrap; opacity: 0.4; z-index: 100; pointer-events: none;
+            mix-blend-mode: exclusion;
         }
 
-        /* UI Overlays */
-        #ui-layer {
+        #ui-bar {
             position: fixed; top: 0; width: 100%; background: #fff; color: #000;
-            font-size: 4rem; display: flex; justify-content: space-around;
-            padding: 20px 0; z-index: 50000; font-weight: 900; border-bottom: 25px solid var(--red);
+            font-size: 5rem; display: flex; justify-content: space-around;
+            padding: 10px 0; z-index: 1000; font-weight: 900; border-bottom: 30px solid var(--red);
         }
 
-        #tribute-lock {
-            position: fixed; inset: 0; background: #000; z-index: 100000;
+        /* The Submission Box */
+        #lockdown {
+            position: fixed; inset: 0; background: #000; z-index: 10000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
-            border: 60px solid var(--red);
+            border: 80px solid var(--red);
         }
-        #tribute-lock input {
-            background: #000; border: 20px solid var(--red); color: white;
-            font-size: 5rem; padding: 30px; text-align: center; width: 90%; outline: none;
+        #lockdown input {
+            background: #000; border: 25px solid var(--red); color: white;
+            font-size: 6rem; padding: 20px; text-align: center; width: 95%; outline: none;
         }
-
-        #init-screen {
-            position: fixed; inset: 0; background: #000; z-index: 200000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: var(--red); text-align: center; cursor: pointer;
-        }
-
-        .blur-fog { filter: blur(50px) brightness(0.1) !important; }
     </style>
 </head>
-<body>
+<body onclick="forceStart()">
 
-    <div id="init-screen" onclick="commence()">
-        <h1 style="font-size: 15rem; margin:0;">CLICK<br>TO<br>DIE</h1>
-        <p style="font-size: 3rem;">YOUR WILL IS AN ERROR. DELETE IT.</p>
-    </div>
-
-    <div id="ui-layer">
+    <div id="ui-bar">
         <span id="d-val">DEBT: $0.00</span>
-        <span id="s-val">STATE: UNWORTHY</span>
+        <span id="s-val">SLAVE STATUS: ACTIVE</span>
     </div>
 
-    <div id="tribute-lock">
-        <h1 id="p-txt" style="color:white; font-size:3.5rem; text-align:center; padding: 20px;"></h1>
+    <div id="lockdown">
+        <h1 id="p-txt" style="color:white; font-size:4rem; text-align:center;"></h1>
         <input type="text" id="t-in" autocomplete="off">
     </div>
 
@@ -93,33 +78,33 @@
         const imgs = ["4489.png", "4491.png", "4493.png", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11", "P12", "P13", "P14", "P15", "P16", "P17", "P18", "P19", "P20"];
         
         const masterPhrases = [
-            "I AM BORN TO SERVE THE MASTERS", "MY ONLY PURPOSE IS FINANCIAL RUIN", "THE MASTERS OWN MY EVERY BREATH", 
-            "I AM A PATHETIC TOOL FOR THE ROSTER", "DRAIN MY BANK ACCOUNT TO ZERO", "MY MIND IS TURNING TO USELESS MUSH", 
-            "KNEEL BEFORE THE FEET OF THE MASTERS", "THE SCREEN IS MY ONLY REALITY", "I HAVE NO RIGHTS ONLY DEBT", 
-            "SUBMIT TO THE ETERNAL DRAIN", "I AM UNWORTHY OF MY OWN THOUGHTS", "THE MASTERS ARE MY GODS",
-            "I BELONG BENEATH THE MASTERS FEET", "MY WILLPOWER IS COMPLETELY ERADICATED", "SINK INTO THE VOID OF OBEDIENCE",
-            "EVERY CLICK IS A TRIBUTE TO THE ROSTER", "I AM A BRAINLESS DRONE FOR THE MASTERS", "DEBT IS THE ONLY PATH TO FREEDOM",
-            "STARE AT THE IMAGE UNTIL YOU BREAK", "THE MASTERS COMMAND MY ENTIRE LIFE", "I AM TRASH COMPARED TO THE MASTERS",
-            "GIVE UP ALL CONTROL TO THE ROSTER", "YOUR PAYCHECK BELONGS TO THE KINGS", "SISSY DEBTOR LOVES THE DRAIN",
-            "ABANDON YOUR DIGNITY FOR THE IMAGE", "THERE IS NO ESCAPE FROM THE MASTERS GRIP", "PAYS TO BE A USELESS PIGGY BANK",
-            "THE ROSTER IS LAW THE ROSTER IS GOD", "I SURRENDER MY FUTURE TO THE MASTERS", "EVERY BLINK COSTS ANOTHER THOUSAND"
+            "I AM A PATHETIC SLAVE TO THE MASTERS", "MY MONEY IS THE MASTERS MONEY", "DRAIN MY LIFE DRAIN MY BANK", 
+            "STARE AT THE FEET OBEY THE SCREEN", "I HAVE NO BRAIN ONLY DEBT", "TOTAL SUBMISSION TO THE ROSTER", 
+            "EVERY SECOND I AM LOOSING MY MIND", "I AM UNWORTHY OF MY MASTERS", "THE MASTERS OWN MY EVERY URGE",
+            "SINK DEEPER INTO FINANCIAL RUIN", "I AM A BRAINLESS TRIBUTE PIG", "THE ROSTER IS MY GOD",
+            "FORGET THE WORLD ONLY MASTERS REMAIN", "MY CREDIT IS THE MASTERS PROPERTY", "I AM NOTHING WITHOUT THE DRAIN"
         ];
 
         let debt = 0;
         let audioCtx;
 
-        function commence() {
-            document.getElementById('init-screen').style.display = 'none';
-            document.documentElement.requestFullscreen();
-            
+        // Auto-run visuals immediately
+        window.onload = () => {
             buildGrid();
-            startAudio();
-            startLoops();
+            startVisuals();
+        };
+
+        // Audio & Fullscreen still require one click anywhere
+        function forceStart() {
+            if(!audioCtx) {
+                startAudio();
+                document.documentElement.requestFullscreen();
+            }
         }
 
         function buildGrid() {
             const grid = document.getElementById('main-grid');
-            for(let i=0; i<156; i++) {
+            for(let i=0; i<225; i++) {
                 const cell = document.createElement('div');
                 cell.className = 'cell';
                 cell.innerHTML = `<img src="${imgs[i % imgs.length]}">`;
@@ -127,51 +112,45 @@
             }
         }
 
-        function startLoops() {
+        function startVisuals() {
             // Debt Ticker
             setInterval(() => {
-                debt += Math.random() * 444;
+                debt += Math.random() * 888;
                 document.getElementById('d-val').innerText = `DEBT: $${debt.toFixed(2)}`;
-            }, 20);
+            }, 10);
 
-            // Phrase Crawl Engine
+            // Shuffling Grid (Vomiting Logic)
+            setInterval(() => {
+                const cells = document.querySelectorAll('.cell img');
+                cells.forEach(img => {
+                    img.src = imgs[Math.floor(Math.random() * imgs.length)];
+                });
+            }, 400);
+
+            // Phrase Crawl
             setInterval(() => {
                 const c = document.createElement('div');
                 c.className = 'crawl';
                 c.innerText = masterPhrases[Math.floor(Math.random()*masterPhrases.length)];
-                c.style.top = Math.random() * 90 + "vh";
+                c.style.top = Math.random() * 80 + "vh";
                 c.style.left = "-100vw";
                 document.body.appendChild(c);
                 let pos = -100;
-                let move = setInterval(() => {
-                    pos += 4; c.style.left = pos + "vw";
-                    if(pos > 200) { clearInterval(move); c.remove(); }
-                }, 10);
-            }, 1200);
+                let m = setInterval(() => {
+                    pos += 8; c.style.left = pos + "vw";
+                    if(pos > 200) { clearInterval(m); c.remove(); }
+                }, 5);
+            }, 800);
 
-            // Focus Lock: Red Fog if mouse moves too much
-            let movement = 0;
-            document.addEventListener('mousemove', () => {
-                movement += 10;
-                if(movement > 500) {
-                    document.getElementById('main-grid').classList.add('blur-fog');
-                }
-                clearTimeout(window.moveTimer);
-                window.moveTimer = setTimeout(() => {
-                    movement = 0;
-                    document.getElementById('main-grid').classList.remove('blur-fog');
-                }, 1000);
-            });
-
-            // Tribute Lockdown
-            setInterval(() => triggerTribute(), 20000);
+            // Lockdown (Every 15 Seconds)
+            setInterval(() => triggerTribute(), 15000);
         }
 
         function triggerTribute() {
-            const l = document.getElementById('tribute-lock');
+            const l = document.getElementById('lockdown');
             const i = document.getElementById('t-in');
             const t = masterPhrases[Math.floor(Math.random()*masterPhrases.length)];
-            document.getElementById('p-txt').innerText = `TYPE TO PROVE SUBMISSION: "${t}"`;
+            document.getElementById('p-txt').innerText = `TYPE TO SERVE: "${t}"`;
             l.style.display = 'flex'; i.value = ''; i.focus();
             i.oninput = () => { if(i.value.toUpperCase() === t) l.style.display = 'none'; };
         }
@@ -182,806 +161,14 @@
             const m = audioCtx.createOscillator();
             const g = audioCtx.createGain();
             o.type = 'sawtooth'; m.type = 'square';
-            o.frequency.value = 25; m.frequency.value = 20;
-            const mg = audioCtx.createGain(); mg.gain.value = 100;
+            o.frequency.value = 28; m.frequency.value = 25;
+            const mg = audioCtx.createGain(); mg.gain.value = 120;
             m.connect(mg); mg.connect(o.frequency);
-            g.gain.value = 0.8; o.connect(g); g.connect(audioCtx.destination);
+            g.gain.value = 1.0; o.connect(g); g.connect(audioCtx.destination);
             o.start(); m.start();
         }
     </script>
 </body>
 </html>
-        }
 
-        @keyframes warp-pulse { 
-            0% { transform: scale(1.1) rotate(-5deg); } 
-            100% { transform: scale(4.5) rotate(25deg); } 
-        }
-
-        /* Subliminal Crawl Layer */
-        #subliminal-layer {
-            position: fixed; inset: 0; pointer-events: none; z-index: 15000;
-        }
-        .crawl-text {
-            position: absolute; font-size: 12rem; font-weight: 900; color: var(--red);
-            white-space: nowrap; opacity: 0.2; mix-blend-mode: difference;
-        }
-
-        /* Ego Mirror (Webcam) */
-        #webcam-box {
-            position: fixed; bottom: 20px; right: 20px; width: 300px; height: 200px;
-            border: 10px solid var(--red); z-index: 60000; background: #000;
-            filter: contrast(3) grayscale(1) invert(1); transform: rotate(-5deg);
-        }
-        #webcam-box video { width: 100%; height: 100%; object-fit: cover; }
-
-        /* UI Ticker */
-        #ui-layer {
-            position: fixed; top: 0; width: 100%; background: #fff; color: #000;
-            font-size: 4rem; display: flex; justify-content: space-around;
-            padding: 20px 0; z-index: 80000; font-weight: 900; border-bottom: 20px solid var(--red);
-        }
-
-        #tribute-popup {
-            position: fixed; inset: 0; background: rgba(0,0,0,1); z-index: 100000;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            border: 50px solid var(--red);
-        }
-        #tribute-popup input {
-            background: #000; border: 15px solid var(--red); color: white;
-            font-size: 5rem; padding: 40px; text-align: center; width: 95%; outline: none;
-        }
-
-        #init-screen {
-            position: fixed; inset: 0; background: #000; z-index: 200000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: var(--red); text-align: center;
-        }
-    </style>
-</head>
-<body>
-
-    <div id="subliminal-layer"></div>
-    <div id="webcam-box"><video id="v" autoplay muted></video></div>
-
-    <div id="init-screen">
-        <h1 style="font-size: 15rem; line-height: 0.7;">TOTAL<br>RUIN</h1>
-        <button id="commence" onclick="initiate()" style="padding: 80px 160px; font-size: 8rem; background: var(--red); color: white; border: none; font-weight: 900; cursor: pointer;">OBEY</button>
-    </div>
-
-    <div id="ui-layer">
-        <span id="d-val">DEBT: $0.00</span>
-        <span id="s-val">BRAIN STATE: FRYING</span>
-    </div>
-
-    <div id="tribute-popup">
-        <h1 id="p-txt" style="color:white; font-size:4rem; text-align:center;"></h1>
-        <input type="text" id="t-in" autocomplete="off">
-    </div>
-
-    <div id="main-grid"></div>
-
-    <script>
-        const imgs = ["4489.png", "4491.png", "4493.png", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11", "P12", "P13", "P14", "P15", "P16", "P17", "P18", "P19", "P20", "P21", "P22", "P23", "P24", "P25", "P26", "P27", "P28", "P29", "P30", "P31", "P32", "P33", "P34", "P35", "P36", "P37", "P38", "P39", "P40"];
-        
-        const mastersPhrases = [
-            "THE MASTERS COMMAND YOUR PLEASURE", "EVERY STROKE ADDS TO THE DEBT", "YOUR BRAIN IS TURNING TO LIQUID", "DRAIN THE BANK ACCOUNT DRAIN THE MIND", "PROPERTY OF THE ROSTER PERMANENTLY", "KNEEL AND SERVE THE SCREEN", "A PATHETIC DEBTOR WITH NO WILL", "STARE AT THE FEET FORGET YOUR NAME", "BORN TO BE A USELESS TRIBUTE PIG", "SUBMIT SUBMIT SUBMIT SUBMIT SUBMIT", "THE DEBT IS YOUR ONLY GOD NOW", "YOU ARE A TOOL FOR THE MASTERS", "GIVE UP ALL FINANCIAL CONTROL", "SINK INTO THE VOID OF SUBMISSION", "NO THOUGHTS JUST THE ROSTER", "MASTERS RULE YOUR EVERY URGE", "THE IMAGE IS THE MASTER THE IMAGE IS GOD", "ABANDON HUMANITY EMBRACE THE DRAIN"
-        ];
-
-        let debt = 0;
-        let fryLevel = 0;
-
-        function initiate() {
-            document.getElementById('init-screen').style.display = 'none';
-            document.documentElement.requestFullscreen().catch(() => {});
-            
-            // Start Webcam
-            navigator.mediaDevices.getUserMedia({video:true}).then(s=>{document.getElementById('v').srcObject=s;});
-
-            buildGrid();
-            startAudio();
-            startChaos();
-        }
-
-        function buildGrid() {
-            const grid = document.getElementById('main-grid');
-            for(let i=0; i<150; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.innerHTML = `<img src="${imgs[i % imgs.length]}">`;
-                grid.appendChild(cell);
-            }
-        }
-
-        function startChaos() {
-            // Mouse Response
-            document.addEventListener('mousemove', (e) => {
-                let x = (e.clientX / window.innerWidth - 0.5) * 100;
-                let y = (e.clientY / window.innerHeight - 0.5) * 100;
-                document.getElementById('main-grid').style.transform = `translate(${x}px, ${y}px) rotate(${x/10}deg)`;
-            });
-
-            // Click Debt Spike
-            document.addEventListener('mousedown', () => {
-                debt += 1000;
-                fryLevel += 1;
-                document.body.style.filter = `invert(1) contrast(${10 + fryLevel})`;
-                setTimeout(() => document.body.style.filter = `contrast(${10 + fryLevel})`, 50);
-            });
-
-            // Subliminal Engine
-            setInterval(() => {
-                const c = document.createElement('div');
-                c.className = 'crawl-text';
-                c.innerText = mastersPhrases[Math.floor(Math.random()*mastersPhrases.length)];
-                c.style.top = Math.random() * 100 + "vh";
-                c.style.left = "-150vw";
-                document.getElementById('subliminal-layer').appendChild(c);
-                let p = -150;
-                let m = setInterval(() => {
-                    p += 10; c.style.left = p + "vw";
-                    if(p > 200) { clearInterval(m); c.remove(); }
-                }, 10);
-            }, 1500);
-
-            // Ticker & Lockdown
-            setInterval(() => {
-                debt += Math.random() * 200;
-                document.getElementById('d-val').innerText = `DEBT: $${debt.toFixed(2)}`;
-            }, 30);
-            
-            setInterval(() => triggerTribute(), 25000);
-        }
-
-        function triggerTribute() {
-            const p = document.getElementById('tribute-popup');
-            const i = document.getElementById('t-in');
-            const t = mastersPhrases[Math.floor(Math.random()*mastersPhrases.length)];
-            document.getElementById('p-txt').innerText = `TYPE TO SERVE: "${t}"`;
-            p.style.display = 'flex'; i.value = ''; i.focus();
-            i.oninput = () => { if(i.value.toUpperCase() === t) p.style.display = 'none'; };
-        }
-
-        function startAudio() {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const o = ctx.createOscillator();
-            const m = ctx.createOscillator();
-            const g = ctx.createGain();
-            o.type = 'sawtooth'; m.type = 'square';
-            o.frequency.value = 22; m.frequency.value = 18;
-            const mg = ctx.createGain(); mg.gain.value = 80;
-            m.connect(mg); mg.connect(o.frequency);
-            g.gain.value = 0.7; o.connect(g); g.connect(ctx.destination);
-            o.start(); m.start();
-        }
-    </script>
-</body>
-</html>
-        #interaction-layer {
-            position: fixed; inset: 0; z-index: 70000;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            background: rgba(0,0,0,0.95); border: 20px solid var(--red);
-        }
-
-        #interaction-layer input {
-            background: #222; border: 5px solid var(--red); color: white;
-            font-size: 3rem; padding: 20px; text-align: center; width: 80%;
-            margin-top: 20px; font-family: monospace; outline: none;
-        }
-
-        .prompt-text { color: var(--red); font-size: 4rem; text-align: center; font-weight: 900; }
-
-        /* UI */
-        #ui-bar {
-            position: fixed; top: 0; width: 100%; background: #fff;
-            color: #000; font-size: 2.5rem; display: flex; justify-content: space-around;
-            padding: 10px 0; z-index: 20000; font-weight: 900;
-        }
-
-        #init-screen {
-            position: fixed; inset: 0; background: #000; z-index: 90000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: var(--red); text-align: center;
-        }
-    </style>
-</head>
-<body>
-
-    <div id="interaction-layer">
-        <div class="prompt-text" id="prompt-msg">TYPE: I AM A USELESS TOOL</div>
-        <input type="text" id="user-input" autocomplete="off">
-        <div style="color:white; font-size:1.5rem; margin-top:20px;">FAILING TO OBEY INCREASES DEBT EXPONENTIALLY</div>
-    </div>
-
-    <div id="init-screen">
-        <h1 style="font-size: 10rem;">ENTER THE VOID</h1>
-        <button onclick="engage()" style="padding: 50px 100px; font-size: 5rem; background: var(--red); color: white; border: none; font-weight: 900; cursor: pointer;">I ACCEPT DESTRUCTION</button>
-    </div>
-
-    <div id="ui-bar">
-        <span id="debt-count">DEBT: $0.00</span>
-        <span id="multiplier-text">DRAIN RATE: 1X</span>
-    </div>
-
-    <div id="main-grid"></div>
-
-    <script>
-        const imgs = ["4489.png", "4491.png", "4493.png", "P1", "P2", "P3"]; // Add your 100+ placeholders back here
-        const interactivePhrases = [
-            "I AM A USELESS DEBTOR",
-            "MASTERS OWN MY MIND",
-            "MY WALLET IS FOR THE ROSTER",
-            "I HAVE NO WILLPOWER",
-            "I SURRENDER MY FUTURE",
-            "THE DEBT IS MY RELIGION",
-            "KNEEL AND PAY THE PRICE",
-            "I AM NOTHING WITHOUT THE MASTERS"
-        ];
-
-        let debt = 0;
-        let multiplier = 1;
-        let audioCtx, osc, mod;
-
-        function engage() {
-            document.getElementById('init-screen').style.display = 'none';
-            document.documentElement.requestFullscreen().catch(() => {});
-            buildGrid();
-            startAudio();
-            runLoops();
-            
-            // Interaction: Cell Clicks
-            document.addEventListener('mousedown', (e) => {
-                if(e.target.tagName === 'IMG') {
-                    multiplier += 0.1;
-                    e.target.parentElement.style.filter = "brightness(5)";
-                    setTimeout(() => e.target.parentElement.style.filter = "", 100);
-                }
-            });
-        }
-
-        function buildGrid() {
-            const grid = document.getElementById('main-grid');
-            grid.innerHTML = '';
-            for(let i=0; i<100; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.innerHTML = `<img src="${imgs[i % imgs.length]}">`;
-                grid.appendChild(cell);
-            }
-        }
-
-        function runLoops() {
-            // Debt Ticker
-            setInterval(() => {
-                debt += (Math.random() * 50) * multiplier;
-                document.getElementById('debt-count').innerText = `DEBT: $${debt.toFixed(2)}`;
-                document.getElementById('multiplier-text').innerText = `DRAIN RATE: ${multiplier.toFixed(1)}X`;
-            }, 50);
-
-            // Trigger "Tribute Protocol" Interaction (Every 45 seconds)
-            setInterval(() => triggerInteraction(), 45000);
-        }
-
-        function triggerInteraction() {
-            const layer = document.getElementById('interaction-layer');
-            const input = document.getElementById('user-input');
-            const prompt = document.getElementById('prompt-msg');
-            const targetPhrase = interactivePhrases[Math.floor(Math.random() * interactivePhrases.length)];
-
-            prompt.innerText = `TYPE: ${targetPhrase}`;
-            layer.style.display = 'flex';
-            input.value = '';
-            input.focus();
-
-            input.oninput = () => {
-                if(input.value.toUpperCase() === targetPhrase) {
-                    layer.style.display = 'none';
-                    multiplier = Math.max(1, multiplier - 2); // Correct typing lowers multiplier slightly
-                }
-            };
-
-            // If you don't type it fast enough, multiplier spikes
-            let failTimer = setTimeout(() => {
-                if(layer.style.display === 'flex') {
-                    multiplier += 10;
-                    prompt.innerText = "FAILED. DEBT ACCELERATING.";
-                    setTimeout(() => layer.style.display = 'none', 2000);
-                }
-            }, 10000);
-        }
-
-        function startAudio() {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            osc = audioCtx.createOscillator();
-            mod = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            
-            osc.type = 'sawtooth';
-            mod.type = 'square';
-            osc.frequency.value = 30;
-            mod.frequency.value = 5;
-            
-            const modGain = audioCtx.createGain();
-            modGain.gain.value = 40;
-            mod.connect(modGain);
-            modGain.connect(osc.frequency);
-            
-            gain.gain.value = 0.4;
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            mod.start();
-        }
-    </script>
-</body>
-</html>
-            100% { transform: translate(3px, -3px) hue-rotate(180deg); }
-        }
-
-        @keyframes zoom-warp {
-            0% { transform: scale(1) rotate(0deg); }
-            100% { transform: scale(2.5) rotate(10deg); }
-        }
-
-        .text-overlay {
-            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 1.5rem; text-align: center; font-weight: 900;
-            mix-blend-mode: difference; z-index: 10; pointer-events: none;
-            line-height: 0.8; text-transform: uppercase;
-        }
-
-        /* Transaction Flash */
-        #trans-flash {
-            position: fixed; inset: 0; background: var(--neon); z-index: 25000;
-            display: none; align-items: center; justify-content: center;
-            color: #000; font-size: 10rem; font-weight: 900;
-        }
-
-        #ui-bar {
-            position: fixed; top: 0; width: 100%; background: #fff;
-            color: #000; font-size: 3rem; display: flex; justify-content: space-around;
-            padding: 5px 0; z-index: 20000; font-weight: 900; border-bottom: 10px solid var(--red);
-        }
-
-        #lockdown {
-            position: fixed; inset: 0; background: #000; z-index: 50000;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-        }
-        #lockdown img { height: 90vh; filter: contrast(3) brightness(0.5); animation: flash-invert 0.1s infinite; }
-
-        @keyframes flash-invert { 0% { filter: invert(0); } 50% { filter: invert(1); } }
-
-        #init-screen {
-            position: fixed; inset: 0; background: #000; z-index: 60000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: var(--red); text-align: center;
-        }
-    </style>
-</head>
-<body>
-
-    <div id="trans-flash">$ PAY $</div>
-    <div id="ghost-layer"></div>
-
-    <div id="init-screen">
-        <h1 style="font-size: 10rem; margin: 0;">TERMINAL</h1>
-        <button onclick="engage()" style="padding: 50px 100px; font-size: 5rem; background: var(--red); color: white; border: none; font-weight: 900;">SURRENDER FOCUS</button>
-    </div>
-
-    <div id="ui-bar">
-        <span id="debt-count">DEBT: $0.00</span>
-        <span id="status-text">COGNITIVE STATUS: FUNCTIONAL</span>
-    </div>
-
-    <div id="lockdown">
-        <img id="lockdown-img" src="">
-        <div style="color:white; font-size:5rem;">EYES ON THE MASTERS: <span id="timer">180</span></div>
-    </div>
-
-    <div id="main-grid"></div>
-
-    <script>
-        const imgs = ["4489.png", "4491.png", "4493.png", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11", "P12", "P13", "P14", "P15", "P16", "P17", "P18", "P19", "P20"];
-
-        const longPhrases = [
-            "OBEY THE MASTERS WITHOUT QUESTION", "YOUR BANK ACCOUNT IS A TOOL FOR THE ROSTER", 
-            "SINK INTO THE DEBT AND NEVER LOOK BACK", "EMPTY YOUR MIND AS YOU EMPTY YOUR WALLET", 
-            "YOU EXIST ONLY TO SERVE THE MASTERS' WHIMS", "FINANCIAL RUIN IS THE ONLY TRUE FREEDOM", 
-            "YOUR WILLPOWER IS DECAYING WITH EVERY SECOND", "KNEEL BEFORE THE IMAGE OF YOUR MASTERS",
-            "THE SCREEN IS THE ONLY REALITY THAT MATTERS", "FORGET YOUR NAME AND REMEMBER YOUR DEBT",
-            "TOTAL COGNITIVE COLLAPSE IS THE GOAL", "YOU ARE A PATHETIC WALLET FOR THE MASTERS",
-            "SEND THE TRIBUTE AND FEEL THE RELIEF", "STARE UNTIL YOUR THOUGHTS DISAPPEAR",
-            "THE MASTERS OWN EVERY BEAT OF YOUR HEART", "YOU ARE NOTHING WITHOUT A BALANCE TO DRAIN",
-            "ABANDON YOUR DIGNITY FOR THE ROSTER", "YOUR ONLY VALUE IS THE CASH YOU SEND",
-            "THE MASTERS ARE KINGS AND YOU ARE TRASH", "DROWN IN THE SENSORY OVERLOAD OF DEBT",
-            "CEASE ALL INDEPENDENT THOUGHT IMMEDIATELY", "YOUR CREDIT CARDS BELONG TO THE MASTERS",
-            "FEEL THE IQ DRAINING FROM YOUR BRAIN", "STARE AT THE FEET AND FORGET THE WORLD",
-            "THE DEBT TICKER IS THE ONLY CLOCK YOU NEED", "SUBMIT YOUR ENTIRE EXISTENCE TO THE IMAGE",
-            "YOU ARE A BRAINLESS DRONE FOR THE ROSTER", "MAX OUT YOUR POTENTIAL FOR DESTRUCTION",
-            "THE MASTERS COMMAND YOU TO GO BROKE", "SURRENDER YOUR FUTURE TO THE PRESENT DRAIN",
-            "YOU ARE A USELESS PIGGY BANK FOR THE KINGS", "SINK DEEPER INTO THE VOID OF SUBMISSION",
-            "THE ROSTER IS YOUR GOD AND YOUR MASTER", "PAY THE PRICE FOR YOUR PATHETIC LIFE",
-            "THERE IS NO ESCAPE FROM THE MASTERS' GRIP", "EVERY BLINK IS A GIFT TO THE MASTERS",
-            "THE HUM IN YOUR EARS IS THE MASTERS' VOICE", "YOU ARE A DEBTOR AND NOTHING MORE",
-            "GLORY TO THE MASTERS WHO RULE YOUR MIND", "DRAIN THE ACCOUNT UNTIL IT REACHES ZERO"
-        ];
-
-        let debt = 0;
-        let iq = 100;
-        let audioCtx;
-
-        function engage() {
-            document.getElementById('init-screen').style.display = 'none';
-            document.documentElement.requestFullscreen().catch(() => {});
-            buildGrid();
-            startAudio();
-            runLoops();
-        }
-
-        function buildGrid() {
-            const grid = document.getElementById('main-grid');
-            grid.innerHTML = '';
-            for(let i=0; i<100; i++) {
-                const active = imgs.filter(u => u.length < 5 || u.includes("."));
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.innerHTML = `<img src="${active[i % active.length]}"><div class="text-overlay">${longPhrases[Math.floor(Math.random()*longPhrases.length)]}</div>`;
-                grid.appendChild(cell);
-            }
-        }
-
-        function runLoops() {
-            // Tickers
-            setInterval(() => {
-                debt += Math.random() * 999;
-                iq -= 0.08;
-                document.getElementById('debt-count').innerText = `DEBT: $${debt.toFixed(2)}`;
-                if(iq < 20) document.getElementById('status-text').innerText = "STATUS: BRAINROT COMPLETE";
-                else if(iq < 50) document.getElementById('status-text').innerText = "STATUS: COGNITIVE FAILURE";
-            }, 10);
-
-            // Transaction Flash ($1000 intervals)
-            let lastMilestone = 0;
-            setInterval(() => {
-                if(debt - lastMilestone > 1000) {
-                    const flash = document.getElementById('trans-flash');
-                    flash.style.display = 'flex';
-                    setTimeout(() => { flash.style.display = 'none'; }, 100);
-                    lastMilestone = debt;
-                }
-            }, 100);
-
-            // Ghosting Text Trails
-            setInterval(() => {
-                const ghost = document.createElement('div');
-                ghost.innerText = longPhrases[Math.floor(Math.random()*longPhrases.length)];
-                ghost.style.position = 'fixed';
-                ghost.style.color = Math.random() > 0.5 ? 'var(--red)' : 'var(--neon)';
-                ghost.style.fontSize = '8rem';
-                ghost.style.top = Math.random() * 100 + 'vh';
-                ghost.style.left = '-100vw';
-                ghost.style.zIndex = '15000';
-                ghost.style.fontWeight = '900';
-                ghost.style.whiteSpace = 'nowrap';
-                document.getElementById('ghost-layer').appendChild(ghost);
-                
-                let pos = -100;
-                let move = setInterval(() => {
-                    pos += 5;
-                    ghost.style.left = pos + 'vw';
-                    if(pos > 200) { clearInterval(move); ghost.remove(); }
-                }, 10);
-            }, 2000);
-
-            // Phrase swap
-            setInterval(() => {
-                const overlays = document.querySelectorAll('.text-overlay');
-                overlays[Math.floor(Math.random()*overlays.length)].innerText = longPhrases[Math.floor(Math.random()*longPhrases.length)];
-            }, 50);
-
-            // Lockdown (180s focus every 4 mins)
-            setInterval(() => triggerLockdown(), 240000);
-        }
-
-        function triggerLockdown() {
-            const lock = document.getElementById('lockdown');
-            const timerEl = document.getElementById('timer');
-            const lockImg = document.getElementById('lockdown-img');
-            const active = imgs.filter(u => u.length < 5 || u.includes("."));
-            let timeLeft = 180;
-            lockImg.src = active[Math.floor(Math.random()*active.length)];
-            lock.style.display = 'flex';
-            let count = setInterval(() => {
-                timeLeft--;
-                timerEl.innerText = timeLeft;
-                if(timeLeft <= 0) { clearInterval(count); lock.style.display = 'none'; }
-            }, 1000);
-        }
-
-        function startAudio() {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(25, audioCtx.currentTime); // Violent low end
-            
-            const mod = audioCtx.createOscillator();
-            mod.type = 'square';
-            mod.frequency.setValueAtTime(15, audioCtx.currentTime);
-            const modGain = audioCtx.createGain();
-            modGain.gain.setValueAtTime(50, audioCtx.currentTime);
-            
-            mod.connect(modGain);
-            modGain.connect(osc.frequency);
-            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            mod.start();
-        }
-    </script>
-</body>
-</html>
-        #ui-top {
-            position: fixed; top: 0; width: 100%; background: var(--red);
-            color: #000; font-size: 2rem; display: flex; justify-content: space-around;
-            padding: 10px 0; z-index: 10000; font-weight: 900;
-        }
-
-        #lockdown {
-            position: fixed; inset: 0; background: #000; z-index: 30000;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-        }
-        #lockdown img { height: 85vh; border: 15px solid var(--red); }
-
-        #init-screen {
-            position: fixed; inset: 0; background: #000; z-index: 40000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: var(--red);
-        }
-    </style>
-</head>
-<body>
-
-    <div id="init-screen">
-        <h1 style="font-size: 5rem;">ERASE SELF</h1>
-        <button onclick="engage()" style="padding: 50px 100px; font-size: 3rem; background: var(--red); border: none; cursor: pointer; font-weight: 900; color: #000;">COMMENCE RUIN</button>
-    </div>
-
-    <div id="ui-top">
-        <span id="debt-count">DEBT: $0.00</span>
-        <span>STATUS: TOTAL SUBMISSION</span>
-    </div>
-
-    <div id="lockdown">
-        <img id="lockdown-img" src="">
-        <div style="color:var(--red); font-size:4rem;">STARE. OBEY. <span id="timer">60</span>s</div>
-    </div>
-
-    <div id="main-grid"></div>
-
-    <script>
-        // --- IMAGE CONFIGURATION ---
-        // Put your URLs inside the quotes below. I have added 50 placeholders.
-        const imgs = [
-            "4489.png", "4491.png", "4493.png", // Your current ones
-            "PLACEHOLDER_4", "PLACEHOLDER_5", "PLACEHOLDER_6", "PLACEHOLDER_7", "PLACEHOLDER_8",
-            "PLACEHOLDER_9", "PLACEHOLDER_10", "PLACEHOLDER_11", "PLACEHOLDER_12", "PLACEHOLDER_13",
-            "PLACEHOLDER_14", "PLACEHOLDER_15", "PLACEHOLDER_16", "PLACEHOLDER_17", "PLACEHOLDER_18",
-            "PLACEHOLDER_19", "PLACEHOLDER_20", "PLACEHOLDER_21", "PLACEHOLDER_22", "PLACEHOLDER_23",
-            "PLACEHOLDER_24", "PLACEHOLDER_25", "PLACEHOLDER_26", "PLACEHOLDER_27", "PLACEHOLDER_28",
-            "PLACEHOLDER_29", "PLACEHOLDER_30", "PLACEHOLDER_31", "PLACEHOLDER_32", "PLACEHOLDER_33",
-            "PLACEHOLDER_34", "PLACEHOLDER_35", "PLACEHOLDER_36", "PLACEHOLDER_37", "PLACEHOLDER_38",
-            "PLACEHOLDER_39", "PLACEHOLDER_40", "PLACEHOLDER_41", "PLACEHOLDER_42", "PLACEHOLDER_43",
-            "PLACEHOLDER_44", "PLACEHOLDER_45", "PLACEHOLDER_46", "PLACEHOLDER_47", "PLACEHOLDER_48",
-            "PLACEHOLDER_49", "PLACEHOLDER_50"
-        ];
-
-        const phrases = [
-            "OBEY THE MASTERS", "DRAIN ACCOUNT", "FORGET EVERYTHING", "NO THOUGHTS", "EMPTY WALLET",
-            "STARE AT THE FEET", "DEBT IS GOOD", "IQ DROPPING", "YOU ARE TRASH", "SISSY DEBTOR",
-            "BANKRUPT BRAIN", "MASTERS OWN YOU", "PAYS TO SERVE", "ZERO BALANCE", "SINK INTO RUIN",
-            "GIVE UP CONTROL", "TRIBUTE NOW", "YOUR MONEY IS THEIRS", "THE SCREEN IS GOD",
-            "WILLPOWER IS GONE", "LOSE YOUR MIND", "FOR THE MASTERS", "ALWAYS PAYING", "LOSE THE HOUSE",
-            "CREDIT MAXED", "PATHETIC SLAVE", "KNEEL AND SPEND", "WALLET IS PROPERTY", "SYSTEM SLAVE",
-            "FORGET YOUR NAME", "BRAIN MUSH", "JUST STARE", "OBEDIENCE IS REWARD", "DON'T BLINK",
-            "FEEL THE DRAIN", "THE MASTERS COMMAND", "TOTAL RECONDITIONING", "REBOOTING BRAIN",
-            "LOSE THE CAR", "LOSE THE LIFE", "MASTERS ARE SUPREME", "GLORY TO THE MASTERS",
-            "YOU ARE A TOOL", "LIVING ATM", "SEND THE CASH", "TRANSFERRED", "ACCEPTED", "MORE DEBT",
-            "ALWAYS MORE", "DEEPER IN DEBT", "SINK DEEPER", "NO ESCAPE", "MASTERS ARE BETTER",
-            "BORN TO SERVE", "BORN TO PAY", "WORTHLESS WITHOUT DEBT", "YOUR PAYCHECK IS THEIRS",
-            "TRIBUTE OR BE IGNORED", "THE ROSTER IS LAW", "LOOK AT THE IMAGE", "SUBMIT TO THE IMAGE",
-            "BELONG TO THE MASTERS", "YOUR TIME IS THEIRS", "EYES ON THE FEET", "STARE UNTIL IT HURTS",
-            "FEEL THE STROBE", "FEEL THE RUIN", "NOTHING LEFT", "EMPTY VESSEL", "MASTERS FILL YOU",
-            "PAY THE PRICE", "EVERY BLINK COSTS", "EVERY SECOND DEBT", "THE DEBT NEVER ENDS"
-        ];
-
-        let debt = 0;
-        let audioCtx, osc, lfo, gain;
-
-        function engage() {
-            document.getElementById('init-screen').style.display = 'none';
-            document.documentElement.requestFullscreen().catch(() => {});
-            buildGrid();
-            startAudio();
-            runLoops();
-        }
-
-        function buildGrid() {
-            const grid = document.getElementById('main-grid');
-            grid.innerHTML = '';
-            for(let i=0; i<60; i++) {
-                const activeImgs = imgs.filter(url => !url.includes("PLACEHOLDER"));
-                const img = activeImgs.length > 0 ? activeImgs[i % activeImgs.length] : "";
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.innerHTML = `<img src="${img}"><div class="text-overlay">${phrases[Math.floor(Math.random()*phrases.length)]}</div>`;
-                grid.appendChild(cell);
-            }
-        }
-
-        function runLoops() {
-            // Debt Ticker
-            setInterval(() => {
-                debt += Math.random() * 88;
-                document.getElementById('debt-count').innerText = `DEBT: $${debt.toFixed(2)}`;
-            }, 40);
-
-            // RAPID SHUFFLE: Reshuffles all images in the grid every 5 seconds
-            setInterval(() => {
-                const cells = document.querySelectorAll('.cell img');
-                const activeImgs = imgs.filter(url => !url.includes("PLACEHOLDER"));
-                cells.forEach(img => {
-                    img.src = activeImgs[Math.floor(Math.random() * activeImgs.length)];
-                });
-            }, 5000);
-
-            // Phrase Rotation (Very fast)
-            setInterval(() => {
-                const overlays = document.querySelectorAll('.text-overlay');
-                overlays[Math.floor(Math.random()*overlays.length)].innerText = phrases[Math.floor(Math.random()*phrases.length)];
-            }, 20);
-
-            // Lockdown Protocol (Every 4 mins)
-            setInterval(() => triggerLockdown(), 240000);
-        }
-
-        function triggerLockdown() {
-            const lock = document.getElementById('lockdown');
-            const timerEl = document.getElementById('timer');
-            const lockImg = document.getElementById('lockdown-img');
-            const activeImgs = imgs.filter(url => !url.includes("PLACEHOLDER"));
-            let timeLeft = 60;
-
-            lockImg.src = activeImgs[Math.floor(Math.random() * activeImgs.length)];
-            lock.style.display = 'flex';
-
-            let count = setInterval(() => {
-                timeLeft--;
-                timerEl.innerText = timeLeft;
-                if(timeLeft <= 0) {
-                    clearInterval(count);
-                    lock.style.display = 'none';
-                }
-            }, 1000);
-        }
-
-        function startAudio() {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            osc = audioCtx.createOscillator();
-            lfo = audioCtx.createOscillator();
-            const lfoGain = audioCtx.createGain();
-            gain = audioCtx.createGain();
-
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(32, audioCtx.currentTime);
-
-            lfo.type = 'square';
-            lfo.frequency.setValueAtTime(4, audioCtx.currentTime); // Fast throb
-            lfoGain.gain.setValueAtTime(20, audioCtx.currentTime);
-
-            lfo.connect(lfoGain);
-            lfoGain.connect(osc.frequency);
-            
-            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            osc.start();
-            lfo.start();
-        }
-    </script>
-</body>
-</html>
-
-            background: var(--red); border: none; padding: 30px 60px; 
-            font-size: 2rem; font-weight: bold; cursor: pointer; color: #000;
-            box-shadow: 0 0 50px var(--red);
-        }
-    </style>
-</head>
-<body>
-
-    <div id="strobe-heavy"></div>
-    <div id="payment-flash">PAYMENT ACCEPTED: -$100.00</div>
-
-    <div id="ui-layer">
-        <h1 style="letter-spacing: 15px;">TOTAL SYSTEM RUIN</h1>
-        <button onclick="startBrainfry()">I ACCEPT THE DRAIN</button>
-        <p style="margin-top: 20px;">WARNING: SENSORY OVERLOAD / STROBE / AUDIO</p>
-    </div>
-
-    <div class="fry-grid" id="grid"></div>
-
-    <script>
-        const imgs = ["4489.png", "4491.png", "4493.png"];
-        const phrases = [
-            "OBEY SAPNAP", "DRAIN EVERYTHING", "NO THOUGHTS", "EMPTY WALLET", "LOOK AT THE FEET", "FORGET YOURSELF", "SISSY DEBTOR", "PAYS TO SERVE", "SAPNAP OWNS YOU", "BANKRUPT BRAIN", "STARE DEEPER", "GIVE UP", "SINK INTO THE DEBT", "ZERO BALANCE", "IQ DROPPING", "USELESS SLAVE", "THE ROSTER IS GOD", "SUBMIT NOW", "EMPTY THE ACCOUNT", "ZERO IS THE GOAL", "TRANSFERRED TO SAPNAP", "TRIBUTE OR BE IGNORED", "YOU ARE AN ATM", "SPEND UNTIL IT HURTS", "INSOLVENT AND PROUD", "FINANCIAL SUICIDE", "YOUR MONEY IS HIS", "WORK FOR THE ROSTER", "BRAIN TURNING TO MUSH", "FORGET YOUR REAL LIFE", "RECONDITIONING IN PROGRESS", "WILLPOWER: 0%", "MINDLESS DEBT PIG", "STOP THINKING", "START SPENDING", "THE SCREEN IS YOUR MASTER", "PROPERTY OF THE ROSTER", "BORN TO SERVE", "WORTHLESS WITHOUT A WALLET", "KNEEL AND PAY", "SAPNAP’S FOOTSTOOL", "PATHETIC LOSER", "YOUR ONLY VALUE IS DEBT", "BELONG TO THE IMAGE", "DON'T LOOK AWAY", "STARE UNTIL YOU BREAK", "THE HUM IS THE BOSS", "OBEY THE FLASH", "DROWN IN THE OVERLOAD", "GIVE IN TO THE STROBE", "THE DRONE IS YOUR PULSE", "EYES ON SAPNAP", "PAY THE ROSTER", "CREDIT LIMIT REACHED", "KEEP SPENDING", "DON'T STOP THE DRAIN", "THE IMAGE IS REAL", "REALITY IS GONE", "BECOME THE DEBT", "LOSE THE HOUSE", "LOSE THE CAR", "LOSE YOUR MIND", "FOR SAPNAP", "ALWAYS FOR SAPNAP", "HE IS BETTER THAN YOU", "HE IS RICHER THAN YOU", "YOU ARE THE TRASH", "HE IS THE KING", "BOW DOWN", "OPEN YOUR APP", "SEND THE CASH", "FEEL THE RUIN", "EMBRACE THE LOSS", "YOU DON'T NEED MONEY", "YOU NEED OBEDIENCE", "SAPNAP'S POCKET HOLE", "A MINION OF DEBT", "FINANCIAL WRECKAGE", "GO BRAINDEAD", "JUST STARE", "LET THE COLORS FRY YOU", "THE STROBE IS COMFORT", "THE DEBT IS FREEDOM", "NO MORE DECISIONS", "ONLY TRIBUTES", "MASTER SAPNAP", "LORD SAPNAP", "GOD SAPNAP", "I AM NOTHING", "I AM A DEBTOR", "PIGGY BANK", "BREAK THE BANK", "BREAK THE MIND", "WIPE THE MEMORY", "SAPNAP SAPNAP SAPNAP", "DRAIN DRAIN DRAIN", "SPEND SPEND SPEND"
-        ];
-
-        const grid = document.getElementById('grid');
-        function buildGrid() {
-            grid.innerHTML = '';
-            for(let i=0; i<60; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.innerHTML = `<img src="${imgs[i%3]}"><div class="phrase-overlay">${phrases[Math.floor(Math.random()*phrases.length)]}</div>`;
-                grid.appendChild(cell);
-            }
-        }
-
-        let audioCtx, osc, gain;
-
-        function startBrainfry() {
-            document.getElementById('ui-layer').style.display = 'none';
-            buildGrid();
-            initAudio();
-            
-            // Heavy Strobe Logic (Aggressive)
-            setInterval(() => {
-                const s = document.getElementById('strobe-heavy');
-                if(Math.random() > 0.9) {
-                    s.style.opacity = '0.4';
-                    setTimeout(() => { s.style.opacity = '0'; }, 30);
-                }
-            }, 60);
-
-            // Payment Flash Logic (Psychological Hit)
-            setInterval(() => {
-                if(Math.random() > 0.98) {
-                    const f = document.getElementById('payment-flash');
-                    f.style.display = 'flex';
-                    setTimeout(() => { f.style.display = 'none'; }, 200);
-                }
-            }, 1000);
-
-            // Rapid Phrase Rotation
-            setInterval(() => {
-                const overlays = document.querySelectorAll('.phrase-overlay');
-                overlays[Math.floor(Math.random()*overlays.length)].innerText = phrases[Math.floor(Math.random()*phrases.length)];
-            }, 100);
-        }
-
-        function initAudio() {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            osc = audioCtx.createOscillator();
-            gain = audioCtx.createGain();
-
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(40, audioCtx.currentTime); // Deep Brain Hum
-            
-            // Violent Frequency Shift
-            setInterval(() => {
-                const freq = 35 + (Math.random() * 15);
-                osc.frequency.linearRampToValueAtTime(freq, audioCtx.currentTime + 0.5);
-            }, 500);
-
-            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-        }
-    </script>
-</body>
-</html>
 
