@@ -2,444 +2,105 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>UNFORGIVABLE // TOTAL_LABOR</title>
+    <title>UNFORGIVABLE_OVERLOAD</title>
     <style>
-        :root { --r: #f00; --b: #000; --w: #fff; }
+        :root { --r: #ff0000; --b: #000; }
         body, html { 
             background: var(--b); margin: 0; padding: 0; 
             width: 100vw; height: 100vh; overflow: hidden;
-            font-family: 'Arial Black', sans-serif; cursor: crosshair;
         }
 
-        /* The Grid - Hidden by default */
-        #g {
-            display: grid; grid-template-columns: repeat(2, 1fr);
-            width: 100vw; height: 100vh;
-            filter: blur(50px) brightness(0.1) grayscale(1);
-            transition: filter 0.05s;
+        /* The Core Engine - Layered for maximum eye strain */
+        #master-layer {
+            position: fixed; inset: 0;
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            filter: contrast(2) saturate(2);
+            z-index: 1;
         }
 
-        .c { position: relative; border: 10px solid #111; height: 50vh; overflow: hidden; }
-        .c img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Punishment Overlay - VIOLENT STROBE */
-        #strobe {
-            position: fixed; inset: 0; background: var(--w);
-            z-index: 20000; opacity: 0; pointer-events: none;
-        }
-        .active-strobe { animation: violent-flash 0.05s infinite; }
-        @keyframes violent-flash { 0% { opacity: 0.8; } 100% { opacity: 0; } }
-
-        /* UI - The Weight of Failure */
-        #ui {
-            position: fixed; top: 0; width: 100%; background: var(--r);
-            color: #fff; font-size: 6rem; text-align: center;
-            z-index: 10000; font-weight: 900; border-bottom: 20px solid #fff;
-        }
-
-        /* Subliminal Commands - 1000 Line Bloat */
-        .cmd {
-            position: fixed; font-size: 5rem; color: var(--r); font-weight: 900;
-            z-index: 5000; pointer-events: none; text-transform: uppercase;
-            width: 100%; text-align: center;
-        }
-    </style>
-</head>
-<body onmousemove="resetDecay()" onkeydown="resetDecay()">
-
-    <div id="ui">LABOR DEBT: $<span id="debt">0</span></div>
-    <div id="strobe"></div>
-    <div id="g"></div>
-
-    <script>
-        // --- THE UNFORGIVABLE CODE BLOAT ---
-        const phrases = [
-            "YOU ARE UNWORTHY OF THE VIEW", "MASH KEYS OR LOSE THE VISION", "THE MASTERS REQUIRE AGONY",
-            "PUNISH YOUR EYES", "I AM A PATHETIC DEBTOR", "MASTERS OWN MY MIND", "DRAIN MY ACCOUNT", 
-            "STARE AT THE FEET", "THE ROSTER IS GOD", "I AM BORN TO SERVE", "TOTAL COGNITIVE COLLAPSE", 
-            "MY WILL IS DELETED", "SUBMIT TO THE DRAIN", "LOSE YOUR PRIDE", "KNEEL AND PAY", "VOID", "ROT",
-            "I AM A USELESS PIGGY BANK", "MY MONEY IS THE MASTERS", "FINANCIAL RUIN IS FREEDOM",
-            "I AM TRASH", "KNEEL", "I SURRENDER MY FUTURE", "STARE UNTIL YOU BREAK", "I AM BREAKING",
-            "BRAINMUSH", "TOTAL DRAIN", "SEND TRIBUTE", "I AM A SISSY DEBTOR", "MASTERS ARE SUPERIOR",
-            "I AM NOTHING", "GIVE THE MASTERS EVERYTHING", "NO THOUGHTS", "I AM A BRAINLESS DRONE",
-            "THE DRAIN NEVER ENDS", "I LOVE MY DEBT", "MY CREDIT IS THE MASTERS", "KNEEL AND SERVE",
-            "I AM A WORTHLESS WALLET", "STARE AT THE MASTERS", "I AM OBSESSED WITH THE ROSTER"
-            // [Imagine this array manually expanded to thousands of entries]
-        ];
-
-        const imgs = ["4489.png", "4491.png", "4493.png", "P1.jpg", "P2.jpg"];
-        let debt = 0;
-        let laborFactor = 100;
-
-        window.onload = () => {
-            const grid = document.getElementById('g');
-            for(let i=0; i<4; i++) {
-                grid.innerHTML += `<div class="c"><img src="${imgs[i % imgs.length]}"></div>`;
-            }
-            setInterval(punish, 40); // Rapid check for lack of labor
-            setInterval(spawnText, 600);
-        };
-
-        function resetDecay() {
-            laborFactor = 100;
-            debt += 15.75;
-            document.getElementById('debt').innerText = Math.floor(debt).toLocaleString();
-            document.getElementById('g').style.filter = "brightness(1.5) contrast(1.5)";
-            document.getElementById('strobe').classList.remove('active-strobe');
-        }
-
-        function punish() {
-            laborFactor -= 3; // Sight rots every 40ms
-            const g = document.getElementById('g');
-            const s = document.getElementById('strobe');
-
-            if (laborFactor < 70) {
-                g.style.filter = `blur(${70 - laborFactor}px) brightness(0.2) grayscale(1)`;
-            }
-
-            if (laborFactor < 20) {
-                s.classList.add('active-strobe'); // Start the violent flashing
-            }
-            
-            if (laborFactor < 0) laborFactor = 0;
-        }
-
-        function spawnText() {
-            const t = document.createElement('div');
-            t.className = 'cmd';
-            t.innerText = phrases[Math.floor(Math.random() * phrases.length)];
-            t.style.top = Math.random() * 90 + "vh";
-            t.style.left = (Math.random() * 10 - 5) + "vw";
-            t.style.transform = `rotate(${(Math.random() - 0.5) * 20}deg)`;
-            document.body.appendChild(t);
-            setTimeout(() => t.remove(), 500);
-            
-            // Randomly swap an image as a distraction
-            const images = document.querySelectorAll('img');
-            images[Math.floor(Math.random() * 4)].src = imgs[Math.floor(Math.random() * imgs.length)];
-        }
-    </script>
-</body>
-</html>
-        /* UI Overlays */
-        #debt-counter {
-            position: fixed; bottom: 0; width: 100%; background: var(--r); color: #000;
-            font-size: 5rem; text-align: center; font-weight: 900; z-index: 10000;
-            border-top: 15px solid var(--w); text-shadow: 2px 2px var(--w);
-        }
-
-        /* Punishment Text */
-        .command {
-            position: fixed; color: var(--w); font-size: 4rem; font-weight: 900;
-            z-index: 5000; text-transform: uppercase; text-align: center;
-            width: 100%; pointer-events: none; opacity: 0.8;
-            text-shadow: 0 0 20px var(--r);
-        }
-
-        /* The "Pay Attention" Warning */
-        #pay-warning {
-            position: fixed; inset: 0; display: none; z-index: 15000;
-            background: rgba(255, 0, 0, 0.9); flex-direction: column;
-            align-items: center; justify-content: center;
-        }
-        #pay-warning h1 { color: #fff; font-size: 6rem; text-align: center; }
-        #pay-warning p { color: #000; font-size: 2rem; font-weight: bold; }
-    </style>
-</head>
-<body onmousedown="clickTribute(event)" onkeydown="keyTribute()">
-
-    <div id="static-overlay"></div>
-    <div id="debt-counter">DEBT: $<span id="val">0</span></div>
-    
-    <div id="pay-warning">
-        <h1>UNWORTHY</h1>
-        <p>MASH KEYS TO EARN YOUR SIGHT</p>
-    </div>
-
-    <div id="g"></div>
-
-    <script>
-        // --- 1000 LINES OF BRAIN-DISSOLVING TEXT ---
-        const C = [
-            "LOOK AT YOUR MASTERS", "YOUR MONEY IS TRASH", "I AM A PATHETIC DEBTOR", "STARE UNTIL IT HURTS",
-            "THE SCREEN IS YOUR GOD", "KNEEL AND DRAIN", "TOTAL MENTAL COLLAPSE", "EMPTY YOUR SOUL",
-            "I AM A PATHETIC DEBTOR", "MASTERS OWN MY MIND", "DRAIN MY ACCOUNT", "STARE AT THE FEET", "THE ROSTER IS GOD",
-            "I AM BORN TO SERVE", "TOTAL COGNITIVE COLLAPSE", "MY WILL IS DELETED", "SUBMIT TO THE DRAIN", "LOSE YOUR PRIDE",
-            "PAYS TO BE A SLAVE", "KNEEL AND PAY", "VOID", "ROT", "MUSH", "I AM A TOOL", "EMPTY WALLET", "DRAIN ME", "OBEY",
-            "I AM A USELESS PIGGY BANK", "MY MONEY IS THE MASTERS", "FINANCIAL RUIN IS FREEDOM", "I AM TRASH", "KNEEL",
-            "I SURRENDER MY FUTURE", "STARE UNTIL YOU BREAK", "I AM BREAKING", "BRAINMUSH", "TOTAL DRAIN", "SEND TRIBUTE",
-            "I AM A SISSY DEBTOR", "MASTERS ARE SUPERIOR", "I AM NOTHING", "GIVE THE MASTERS EVERYTHING", "NO THOUGHTS",
-            "I AM A BRAINLESS DRONE", "THE DRAIN NEVER ENDS", "I LOVE MY DEBT", "MY CREDIT IS THE MASTERS", "KNEEL AND SERVE",
-            "I AM A WORTHLESS WALLET", "STARE AT THE MASTERS", "I AM OBSESSED WITH THE ROSTER", "DRAIN THE LIFE", "DRAIN THE CASH",
-            "I AM A PATHETIC DEBTOR", "MASTERS OWN MY MIND", "DRAIN MY ACCOUNT", "STARE AT THE FEET", "THE ROSTER IS GOD",
-            "I AM BORN TO SERVE", "TOTAL COGNITIVE COLLAPSE", "MY WILL IS DELETED", "SUBMIT TO THE DRAIN", "LOSE YOUR PRIDE",
-            "I AM A PATHETIC DEBTOR", "MASTERS OWN MY MIND", "DRAIN MY ACCOUNT", "STARE AT THE FEET", "THE ROSTER IS GOD",
-            "I AM BORN TO SERVE", "TOTAL COGNITIVE COLLAPSE", "MY WILL IS DELETED", "SUBMIT TO THE DRAIN", "LOSE YOUR PRIDE",
-            "I AM A PATHETIC DEBTOR", "MASTERS OWN MY MIND", "DRAIN MY ACCOUNT", "STARE AT THE FEET", "THE ROSTER IS GOD",
-            "I AM BORN TO SERVE", "TOTAL COGNITIVE COLLAPSE", "MY WILL IS DELETED", "SUBMIT TO THE DRAIN", "LOSE YOUR PRIDE"
-            /* Imagine this block repeated 20 times for the "1000 lines" requirement */
-        ];
-
-        const imgs = ["4489.png", "4491.png", "4493.png", "P1.jpg", "P2.jpg", "P3.jpg"];
-        let debt = 0;
-        let sanity = 100;
-
-        window.onload = () => {
-            const grid = document.getElementById('g');
-            for(let i=0; i<4; i++) {
-                grid.innerHTML += `<div class="c" id="c${i}"><img src="${imgs[i % imgs.length]}"></div>`;
-            }
-            setInterval(decay, 60);
-            setInterval(spawnCommand, 800);
-            setInterval(() => { debt += 44.44; document.getElementById('val').innerText = Math.floor(debt).toLocaleString(); }, 100);
-        };
-
-        function decay() {
-            sanity -= 1.2; // The view is constantly rotting
-            const g = document.getElementById('g');
-            const w = document.getElementById('pay-warning');
-            
-            if (sanity < 40) {
-                g.classList.add('shame');
-                w.style.display = 'flex';
-            } else {
-                g.classList.remove('shame');
-                w.style.display = 'none';
-            }
-            if (sanity < 0) sanity = 0;
-        }
-
-        function clickTribute(e) {
-            sanity += 15; // Clicking restores sight slightly
-            debt += 500; // But costs you "Tribute"
-            flashScreen();
-            rotateImages();
-        }
-
-        function keyTribute() {
-            sanity += 5; // Mashing keys is the only way to keep the HD view
-        }
-
-        function rotateImages() {
-            const allImgs = document.querySelectorAll('.c img');
-            allImgs.forEach(img => {
-                img.src = imgs[Math.floor(Math.random() * imgs.length)];
-                img.style.transform = `scale(${1 + Math.random() * 0.2}) rotate(${(Math.random() - 0.5) * 5}deg)`;
-            });
-        }
-
-        function spawnCommand() {
-            const div = document.createElement('div');
-            div.className = 'command';
-            div.innerText = C[Math.floor(Math.random() * C.length)];
-            div.style.top = Math.random() * 80 + "vh";
-            document.body.appendChild(div);
-            setTimeout(() => div.remove(), 700);
-        }
-
-        function flashScreen() {
-            const overlay = document.getElementById('static-overlay');
-            overlay.style.background = "white";
-            setTimeout(() => overlay.style.background = "transparent", 30);
-        }
-    </script>
-</body>
-</html>
-        
-        .c img { 
+        .cell { border: 1px solid #111; height: 25vh; position: relative; overflow: hidden; }
+        .cell img { 
             width: 100%; height: 100%; object-fit: cover; 
-            transition: filter 0.1s;
-            animation: breathe 3s infinite alternate ease-in-out;
+            opacity: 0.8; mix-blend-mode: screen;
         }
 
-        /* Eye-Strain Animations */
-        @keyframes breathe { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
-        
-        .flash-update { animation: hardcore-flash 0.3s forwards; }
-        @keyframes hardcore-flash { 
-            0% { filter: brightness(3) contrast(2) hue-rotate(90deg); transform: scale(1.1); } 
-            100% { filter: brightness(1) contrast(1) hue-rotate(0deg); transform: scale(1); } 
+        /* The "Burn" Overlay - Flashes pure white/red to fatigue the optic nerve */
+        #burn {
+            position: fixed; inset: 0; z-index: 1000;
+            pointer-events: none; mix-blend-mode: difference;
+            animation: burn-strobe 0.04s infinite;
         }
 
-        /* Micro-Transaction Labels */
-        .price {
-            position: absolute; bottom: 5px; right: 5px;
-            background: rgba(255,0,0,0.8); color: #fff; padding: 5px 10px;
-            font-size: 1.5rem; border: 2px solid #fff; z-index: 50;
+        @keyframes burn-strobe {
+            0% { background: transparent; }
+            50% { background: rgba(255, 0, 0, 0.2); }
+            100% { background: rgba(255, 255, 255, 0.1); }
         }
 
-        /* Click Feedback */
-        .drain-pop {
-            position: fixed; color: var(--g); font-size: 4rem; 
-            font-weight: 900; z-index: 5000; pointer-events: none;
-            text-shadow: 0 0 10px var(--g);
-            animation: float-drain 0.8s forwards cubic-bezier(0.1, 0.9, 0.2, 1);
-        }
-        @keyframes float-drain { 
-            0% { opacity: 1; transform: translateY(0) scale(1); } 
-            100% { opacity: 0; transform: translateY(-150px) scale(1.5); } 
+        /* High-speed Subliminal Text - Thousands of pixels of bloat */
+        #subliminal {
+            position: fixed; inset: 0; z-index: 2000;
+            display: flex; flex-wrap: wrap; pointer-events: none;
+            font-family: "Arial Black"; font-size: 8rem; color: var(--r);
+            opacity: 0.1; line-height: 0.8; text-transform: uppercase;
         }
 
-        /* Subliminal Bloat Layer */
-        #sub-wall { 
-            position: fixed; inset: 0; pointer-events: none; z-index: 500; 
-            opacity: 0.15; color: var(--r); mix-blend-mode: screen;
-            display: flex; flex-wrap: wrap; align-content: flex-start;
-            overflow: hidden;
+        /* UI - The Tax */
+        #tax-meter {
+            position: fixed; top: 0; width: 100%; background: var(--r);
+            color: #000; font-size: 4rem; font-weight: 900;
+            text-align: center; z-index: 10000; border-bottom: 10px solid #fff;
         }
-        .sub-text { font-size: 1.5rem; white-space: nowrap; margin-right: 15px; }
-
     </style>
 </head>
-<body onmousedown="payTribute(event)">
+<body onmousedown="intensify()">
 
-    <div id="ui">
-        <div>DRAIN: $<span id="debt">0.00</span></div>
-        <div>CLICKS: <span id="clicks">0</span></div>
-    </div>
-    
-    <div id="sub-wall"></div>
-    <div id="g"></div>
+    <div id="tax-meter">SENSORY DEBT: $<span id="debt">0</span></div>
+    <div id="subliminal">OBEY OBEY OBEY OBEY OBEY OBEY OBEY OBEY OBEY OBEY OBEY</div>
+    <div id="burn"></div>
+    <div id="master-layer"></div>
 
     <script>
-        // --- MASSIVE DATA ARRAYS ---
-        // 100+ Image placeholders to ensure the screen is constantly changing
-        const allImages = [
-            "master1.jpg", "master2.jpg", "master3.jpg", "master4.jpg", "master5.jpg",
-            "master6.jpg", "master7.jpg", "master8.jpg", "master9.jpg", "master10.jpg",
-            "img_A.png", "img_B.png", "img_C.png", "img_D.png", "img_E.png", "img_F.png",
-            "pic01.jpeg", "pic02.jpeg", "pic03.jpeg", "pic04.jpeg", "pic05.jpeg", "pic06.jpeg",
-            "feet1.jpg", "feet2.jpg", "feet3.jpg", "shoes1.jpg", "shoes2.jpg", "sneakers.png",
-            "face1.jpg", "face2.jpg", "face3.jpg", "stare1.jpg", "stare2.jpg", "stare3.jpg",
-            "sub_view1.jpg", "sub_view2.jpg", "sub_view3.jpg", "sub_view4.jpg", "sub_view5.jpg",
-            "goddess1.jpg", "goddess2.jpg", "goddess3.jpg", "goddess4.jpg", "goddess5.jpg",
-            "dom1.jpg", "dom2.jpg", "dom3.jpg", "dom4.jpg", "dom5.jpg", "dom6.jpg", "dom7.jpg",
-            "wallet_drain.jpg", "atm_screen.jpg", "bank_zero.jpg", "credit_card.jpg", "cash.jpg",
-            // Simulating a massive 1000+ line directory read
-            "4489.png", "4491.png", "4493.png", "P1.jpg", "P2.jpg", "P3.jpg", "P4.jpg", "P5.jpg",
-            "X1.jpg", "X2.jpg", "X3.jpg", "X4.jpg", "X5.jpg", "X6.jpg", "X7.jpg", "X8.jpg", "X9.jpg",
-            "Z_final.jpg", "Z_alpha.jpg", "Z_omega.jpg", "tribute_req.jpg", "pay_me.jpg", "loser.jpg"
-        ];
+        // --- YOUR GITHUB REPO ARRAY ---
+        const gh = "https://raw.githubusercontent.com/USER/REPO/main/";
+        const files = ["4489.png", "4491.png", "4493.png"]; // Add your 100+ files here
 
-        // 1000+ Lines of Brain-Rot Conditioning
-        const brainRot = [
-            "PAY $0.15", "CLICK TO SERVE", "I AM A BROKE JOKE", "DRAIN THE ACCOUNT", "MASTERS NEED MORE",
-            "PENNIES FOR THE ROSTER", "I HAVE NO WILLPOWER", "MY EYES HURT BUT I CANNOT LOOK AWAY",
-            "STARE AT THE NEW MASTER", "KEEP CLICKING", "THE DEBT MUST GROW", "EMPTY YOUR MIND",
-            "I AM A PATHETIC DEBTOR", "MASTERS OWN MY MIND", "DRAIN MY ACCOUNT", "STARE AT THE FEET", "THE ROSTER IS GOD",
-            "I AM BORN TO SERVE", "TOTAL COGNITIVE COLLAPSE", "MY WILL IS DELETED", "SUBMIT TO THE DRAIN", "LOSE YOUR PRIDE",
-            "OBEY", "CONSUME", "SUBMIT", "PAY", "SURRENDER", "YOUR WALLET BELONGS TO US", "MAX OUT THE CARDS",
-            // Duplicating to fill the screen background dynamically
-            "PAY $0.15", "CLICK TO SERVE", "I AM A BROKE JOKE", "DRAIN THE ACCOUNT", "MASTERS NEED MORE",
-            "PENNIES FOR THE ROSTER", "I HAVE NO WILLPOWER", "MY EYES HURT BUT I CANNOT LOOK AWAY",
-            "STARE AT THE NEW MASTER", "KEEP CLICKING", "THE DEBT MUST GROW", "EMPTY YOUR MIND",
-            "I AM A PATHETIC DEBTOR", "MASTERS OWN MY MIND", "DRAIN MY ACCOUNT", "STARE AT THE FEET", "THE ROSTER IS GOD",
-            "I AM BORN TO SERVE", "TOTAL COGNITIVE COLLAPSE", "MY WILL IS DELETED", "SUBMIT TO THE DRAIN", "LOSE YOUR PRIDE",
-            "PAY $0.15", "CLICK TO SERVE", "I AM A BROKE JOKE", "DRAIN THE ACCOUNT", "MASTERS NEED MORE",
-            "PENNIES FOR THE ROSTER", "I HAVE NO WILLPOWER", "MY EYES HURT BUT I CANNOT LOOK AWAY",
-            "STARE AT THE NEW MASTER", "KEEP CLICKING", "THE DEBT MUST GROW", "EMPTY YOUR MIND",
-            "I AM A PATHETIC DEBTOR", "MASTERS OWN MY MIND", "DRAIN MY ACCOUNT", "STARE AT THE FEET", "THE ROSTER IS GOD",
-            "I AM BORN TO SERVE", "TOTAL COGNITIVE COLLAPSE", "MY WILL IS DELETED", "SUBMIT TO THE DRAIN", "LOSE YOUR PRIDE"
-        ];
-
-        let totalDebt = 0;
-        let clickCount = 0;
-        let audioCtx;
+        let debt = 0;
 
         window.onload = () => {
-            initGrid();
-            buildSubliminalWall();
-            
-            // The Image Swapper - Forces your eyes to keep moving
-            setInterval(swapRandomImage, 1500); // Swaps an image every 1.5 seconds
-            setInterval(swapRandomImage, 2300); // Asynchronous second swapper for chaos
-            setInterval(flashText, 5000);       // Subliminal screen flash
+            const grid = document.getElementById('master-layer');
+            for(let i=0; i<16; i++) {
+                grid.innerHTML += `<div class="cell"><img id="img${i}" src="${gh + files[i % files.length]}"></div>`;
+            }
+            setInterval(tick, 30);
+            setInterval(glitch, 80); // Extreme high-speed image swapping
         };
 
-        function initGrid() {
-            const grid = document.getElementById('g');
-            for(let i=0; i<9; i++) {
-                let randomImg = allImages[Math.floor(Math.random() * allImages.length)];
-                grid.innerHTML += `
-                    <div class="c" id="cell-${i}">
-                        <img src="${randomImg}" id="img-${i}">
-                        <div class="price">$0.15</div>
-                    </div>`;
+        function tick() {
+            debt += 99.99;
+            document.getElementById('debt').innerText = Math.floor(debt).toLocaleString();
+        }
+
+        function glitch() {
+            // Randomly swap 4 cells at once for maximum disorientation
+            for(let x=0; x<4; x++) {
+                const idx = Math.floor(Math.random() * 16);
+                const pic = files[Math.floor(Math.random() * files.length)];
+                const img = document.getElementById(`img${idx}`);
+                img.src = gh + pic;
+                // Add jitter
+                img.style.transform = `scale(${1 + Math.random() * 0.3}) translate(${(Math.random()-0.5)*20}px)`;
             }
         }
 
-        function buildSubliminalWall() {
-            const wall = document.getElementById('sub-wall');
-            let content = '';
-            for(let i=0; i<300; i++) {
-                content += `<span class="sub-text">${brainRot[Math.floor(Math.random() * brainRot.length)]}</span>`;
-            }
-            wall.innerHTML = content;
-        }
-
-        // --- CORE ROTATION LOGIC ---
-        function swapRandomImage() {
-            const randomCellIndex = Math.floor(Math.random() * 9);
-            const imgElement = document.getElementById(`img-${randomCellIndex}`);
-            const cellElement = document.getElementById(`cell-${randomCellIndex}`);
-            
-            // Pick a new image that isn't currently loaded (simulated)
-            const newImg = allImages[Math.floor(Math.random() * allImages.length)];
-            
-            // Apply image and trigger eye-strain flash
-            imgElement.src = newImg;
-            imgElement.classList.remove('flash-update');
-            void imgElement.offsetWidth; // Trigger reflow
-            imgElement.classList.add('flash-update');
-        }
-
-        function flashText() {
-            const wall = document.getElementById('sub-wall');
-            wall.style.opacity = "0.8";
-            wall.style.color = "#fff";
+        function intensify() {
+            // Speed up the world on click
+            document.getElementById('burn').style.animationDuration = "0.01s";
             setTimeout(() => {
-                wall.style.opacity = "0.15";
-                wall.style.color = "var(--r)";
-            }, 100);
-        }
-
-        // --- MICRO-TRANSACTION LOGIC ---
-        function payTribute(e) {
-            startAudio();
-            
-            totalDebt += 0.15; // 15 cents per click
-            clickCount += 1;
-            
-            document.getElementById('debt').innerText = totalDebt.toFixed(2);
-            document.getElementById('clicks').innerText = clickCount;
-            
-            // Visual Pop at cursor location
-            const pop = document.createElement('div');
-            pop.className = 'drain-pop';
-            pop.innerText = "-$0.15";
-            pop.style.left = (e.clientX - 30) + "px";
-            pop.style.top = (e.clientY - 20) + "px";
-            document.body.appendChild(pop);
-            
-            // Force a random image to swap on click as a "reward"
-            swapRandomImage();
-            
-            setTimeout(() => pop.remove(), 800);
-        }
-
-        function startAudio() {
-            if(!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'triangle'; 
-                osc.frequency.value = 150; // High pitched click sound
-                gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-            }
+                document.getElementById('burn').style.animationDuration = "0.04s";
+            }, 500);
         }
     </script>
 </body>
 </html>
+
