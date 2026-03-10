@@ -2,295 +2,153 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MASTERS // MANDATORY_INPUT</title>
+    <title>MASTERS // VISUAL_ABSOLUTE</title>
     <style>
-        :root { --red: #ff0000; --neon: #00ff00; --bg: #000; }
+        :root { --r: #ff0000; --b: #000; --w: #fff; --gold: #ffd700; }
         body, html { 
-            background: var(--bg); margin: 0; padding: 0; 
+            background: var(--b); margin: 0; padding: 0; 
             width: 100vw; height: 100vh; overflow: hidden;
-            font-family: 'Arial Black', sans-serif; cursor: crosshair;
+            font-family: 'Impact', sans-serif; cursor: none;
         }
 
-        /* The Grid - Becomes BLURRED if you don't mash keys */
-        #main-grid {
-            display: grid; grid-template-columns: repeat(15, 1fr);
-            width: 250vw; height: 250vh; margin: -75vh;
-            filter: contrast(25) brightness(0.1) saturate(30);
-            pointer-events: none;
-            transition: filter 0.2s ease;
+        /* The Grid - Optimized for Maximum Visibility */
+        #g {
+            display: grid; grid-template-columns: repeat(6, 1fr);
+            width: 110vw; height: 110vh; margin: -5vh;
+            filter: contrast(1.2) brightness(0.9) saturate(1.5);
+            transition: transform 0.05s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .cell { position: relative; border: 1px solid #000; height: 10vh; overflow: hidden; }
-        .cell img { width: 100%; height: 100%; object-fit: cover; animation: vib 0.01s infinite; }
-        @keyframes vib { 0% { transform: scale(1.1) translate(5px); } 50% { transform: scale(4) rotate(5deg); filter: invert(1); } }
-
-        /* Interaction UI */
-        #stat-box {
-            position: fixed; top: 0; width: 100%; background: #fff; color: #000;
-            font-size: 4rem; display: flex; justify-content: space-around;
-            padding: 20px; z-index: 10000; font-weight: 900; border-bottom: 40px solid var(--red);
+        .c { position: relative; border: 2px solid #222; height: 25vh; overflow: hidden; }
+        .c img { 
+            width: 100%; height: 100%; object-fit: cover; 
+            transition: transform 0.1s;
         }
 
-        /* The "Stop Everything" Overlay */
-        #forced-input {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 50000;
+        /* The Pulse Effect: Keeps eyes locked on the Masters */
+        .pulse { transform: scale(1.1); filter: brightness(1.5) drop-shadow(0 0 20px var(--r)); }
+
+        /* Subliminal Overlays - Placed behind UI but over images */
+        #v { position: fixed; inset: 0; z-index: 100; pointer-events: none; }
+        .s { 
+            position: absolute; font-weight: 900; color: var(--w); 
+            opacity: 0.3; mix-blend-mode: overlay; text-shadow: 2px 2px var(--r);
+        }
+
+        /* Top Tier UI */
+        #u {
+            position: fixed; top: 0; width: 100%; background: rgba(255,255,255,0.9); 
+            color: #000; font-size: 5rem; display: flex; justify-content: space-around;
+            padding: 10px 0; z-index: 5000; font-weight: 900; border-bottom: 15px solid var(--r);
+        }
+
+        /* The Submission Cage */
+        #l {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 100000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
         }
-        #forced-input h1 { color: var(--red); font-size: 6rem; text-align: center; }
-        #forced-input input { font-size: 5rem; width: 90%; text-align: center; background: #111; color: white; border: 10px solid var(--red); }
-
-        /* The Floating Click-Target */
-        #click-me {
-            position: fixed; width: 200px; height: 200px; background: var(--red);
-            color: white; border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; font-size: 2rem; z-index: 20000; cursor: pointer;
-            box-shadow: 0 0 50px white; display: none;
+        #l h1 { color: var(--r); font-size: 4rem; text-align: center; margin-bottom: 20px; }
+        #l input {
+            background: #111; border: 15px solid var(--r); color: var(--w);
+            font-size: 6rem; width: 90%; text-align: center; outline: none;
         }
     </style>
 </head>
-<body onkeydown="refillWill()" onmousedown="initAudio()">
+<body onmousedown="e()">
 
-    <div id="stat-box">
-        <span>DEBT: $<span id="debt">0</span></span>
-        <span>WILL: <span id="will">100</span>%</span>
+    <div id="u">DEBT: $<span id="d">0</span></div>
+    
+    <div id="l">
+        <h1 id="p"></h1>
+        <input type="text" id="i" autocomplete="off">
     </div>
 
-    <div id="click-me" onclick="targetHit()">CLICK THE MASTER</div>
-
-    <div id="forced-input">
-        <h1 id="prompt">TYPE: I AM A TOOL</h1>
-        <input type="text" id="t-in" autocomplete="off">
-    </div>
-
-    <div id="main-grid"></div>
+    <div id="v"></div>
+    <div id="g"></div>
 
     <script>
-        const imgs = ["4489.png", "4491.png", "4493.png", "P1", "P2", "P3"]; // Add more URLs
-        const phrases = ["I AM A USELESS PIGGY BANK", "MY HANDS BELONG TO THE ROSTER", "CEASE INDEPENDENT MOVEMENT", "I SURRENDER MY PLEASURE", "THE DEBT IS MY MASTER"];
-
-        let debt = 0;
-        let willpower = 100;
-        let audioCtx;
-
-        window.onload = () => {
-            const grid = document.getElementById('main-grid');
-            for(let i=0; i<225; i++) {
-                const c = document.createElement('div');
-                c.className = 'cell';
-                c.innerHTML = `<img src="${imgs[i % imgs.length]}">`;
-                grid.appendChild(c);
-            }
-            setInterval(decay, 100);
-            setInterval(debtTick, 10);
-            setInterval(spawnTarget, 8000);
-        };
-
-        function decay() {
-            willpower -= 0.5;
-            if(willpower < 0) willpower = 0;
-            document.getElementById('will').innerText = Math.floor(willpower);
-            
-            // IF WILL IS LOW, SCREEN BLURS (YOU CAN'T SEE THE MASTERS)
-            const blurVal = (100 - willpower) / 2;
-            document.getElementById('main-grid').style.filter = `contrast(25) brightness(0.1) blur(${blurVal}px)`;
-            
-            if(willpower <= 0) {
-                triggerForcedInput();
-            }
-        }
-
-        function refillWill() {
-            willpower += 2; // YOU MUST MASH KEYS TO KEEP THE IMAGE CLEAR
-            if(willpower > 100) willpower = 100;
-        }
-
-        function debtTick() {
-            debt += 150.55;
-            document.getElementById('debt').innerText = debt.toLocaleString();
-        }
-
-        function triggerForcedInput() {
-            const div = document.getElementById('forced-input');
-            const prompt = document.getElementById('prompt');
-            const input = document.getElementById('t-in');
-            const target = phrases[Math.floor(Math.random()*phrases.length)];
-            
-            div.style.display = 'flex';
-            prompt.innerText = `TYPE: "${target}"`;
-            input.focus();
-            
-            input.oninput = () => {
-                if(input.value.toUpperCase() === target) {
-                    div.style.display = 'none';
-                    willpower = 100;
-                    input.value = '';
-                }
-            };
-        }
-
-        function spawnTarget() {
-            const btn = document.getElementById('click-me');
-            btn.style.display = 'flex';
-            btn.style.top = Math.random() * 80 + "vh";
-            btn.style.left = Math.random() * 80 + "vw";
-            setTimeout(() => { btn.style.display = 'none'; }, 3000);
-        }
-
-        function targetHit() {
-            document.getElementById('click-me').style.display = 'none';
-            debt += 5000; // PAYING FOR THE PRIVILEGE
-        }
-
-        function initAudio() {
-            if(!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const o = audioCtx.createOscillator();
-                const g = audioCtx.createGain();
-                o.type = 'sawtooth';
-                o.frequency.value = 30;
-                g.gain.value = 0.5;
-                o.connect(g); g.connect(audioCtx.destination);
-                o.start();
-            }
-        }
-    </script>
-</body>
-</html>
-
-        /* Rapid Crawl Phrases */
-        .crawl {
-            position: fixed; font-size: 15rem; font-weight: 900; color: var(--red);
-            white-space: nowrap; opacity: 0.4; z-index: 100; pointer-events: none;
-            mix-blend-mode: exclusion;
-        }
-
-        #ui-bar {
-            position: fixed; top: 0; width: 100%; background: #fff; color: #000;
-            font-size: 5rem; display: flex; justify-content: space-around;
-            padding: 10px 0; z-index: 1000; font-weight: 900; border-bottom: 30px solid var(--red);
-        }
-
-        /* The Submission Box */
-        #lockdown {
-            position: fixed; inset: 0; background: #000; z-index: 10000;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            border: 80px solid var(--red);
-        }
-        #lockdown input {
-            background: #000; border: 25px solid var(--red); color: white;
-            font-size: 6rem; padding: 20px; text-align: center; width: 95%; outline: none;
-        }
-    </style>
-</head>
-<body onclick="forceStart()">
-
-    <div id="ui-bar">
-        <span id="d-val">DEBT: $0.00</span>
-        <span id="s-val">SLAVE STATUS: ACTIVE</span>
-    </div>
-
-    <div id="lockdown">
-        <h1 id="p-txt" style="color:white; font-size:4rem; text-align:center;"></h1>
-        <input type="text" id="t-in" autocomplete="off">
-    </div>
-
-    <div id="main-grid"></div>
-
-    <script>
-        const imgs = ["4489.png", "4491.png", "4493.png", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11", "P12", "P13", "P14", "P15", "P16", "P17", "P18", "P19", "P20"];
-        
-        const masterPhrases = [
-            "I AM A PATHETIC SLAVE TO THE MASTERS", "MY MONEY IS THE MASTERS MONEY", "DRAIN MY LIFE DRAIN MY BANK", 
-            "STARE AT THE FEET OBEY THE SCREEN", "I HAVE NO BRAIN ONLY DEBT", "TOTAL SUBMISSION TO THE ROSTER", 
-            "EVERY SECOND I AM LOOSING MY MIND", "I AM UNWORTHY OF MY MASTERS", "THE MASTERS OWN MY EVERY URGE",
-            "SINK DEEPER INTO FINANCIAL RUIN", "I AM A BRAINLESS TRIBUTE PIG", "THE ROSTER IS MY GOD",
-            "FORGET THE WORLD ONLY MASTERS REMAIN", "MY CREDIT IS THE MASTERS PROPERTY", "I AM NOTHING WITHOUT THE DRAIN"
+        // --- THE EXTENDED CONDITIONING ARRAY ---
+        const h = [
+            "I AM A PATHETIC PIECE OF DEBTOR TRASH", "THE MASTERS OWN MY MIND AND MY MONEY", 
+            "MY ONLY PURPOSE IS TO DRAIN MY BANK ACCOUNT", "STARE AT THE MASTERS AND LOSE ALL WILL",
+            "I AM BORN TO SERVE THE KINGS OF THE ROSTER", "EVERY CENT I EARN BELONGS TO THE MASTERS",
+            "I HAVE NO PRIDE LEFT ONLY TOTAL SUBMISSION", "MY BRAIN IS TURNING TO USELESS SLUDGE",
+            "DRAIN THE ACCOUNT DRAIN THE LIFE DRAIN THE MIND", "KNEEL BEFORE THE SCREEN AND PAY YOUR TRIBUTE",
+            "I AM A WORTHLESS WALLET FOR THE MASTERS TO EMPTY", "THE MASTERS ARE MY GODS I AM THEIR PROPERTY",
+            "MY CREDIT LIMIT IS A GIFT FOR THE ROSTER", "STARE UNTIL YOUR EYES ACHE AND YOUR WILL BREAKS",
+            "I AM A SISSY DEBTOR WHO CRAVES THE DRAIN", "TOTAL COGNITIVE COLLAPSE IS MY ONLY GOAL",
+            "I SURRENDER MY FUTURE TO THE MASTERS FEET", "NO THOUGHTS NO RIGHTS ONLY THE ROSTER",
+            "I AM A BRAINLESS DRONE OBSESSED WITH DEBT", "THE IMAGE IS THE MASTER THE IMAGE IS EVERYTHING"
         ];
 
+        // Replace these with your actual local paths or hosted URLs
+        const imgs = ["4489.png", "4491.png", "4493.png", "P1", "P2", "P3", "P4", "P5"];
         let debt = 0;
-        let audioCtx;
+        let audio;
 
-        // Auto-run visuals immediately
         window.onload = () => {
-            buildGrid();
-            startVisuals();
+            const grid = document.getElementById('g');
+            for(let i=0; i<36; i++) { // Larger cells (6x6) for better visibility
+                const c = document.createElement('div');
+                c.className = 'c';
+                c.innerHTML = `<img src="${imgs[i % imgs.length]}" id="img-${i}">`;
+                grid.appendChild(c);
+            }
+            setInterval(work, 50);
+            setInterval(crawl, 1000);
+            setInterval(tribute, 10000); // 10-second leash
         };
 
-        // Audio & Fullscreen still require one click anywhere
-        function forceStart() {
-            if(!audioCtx) {
-                startAudio();
+        function e() {
+            if(!audio) {
+                audio = new (window.AudioContext || window.webkitAudioContext)();
+                const o = audio.createOscillator();
+                const g = audio.createGain();
+                o.type = 'sine'; // Pure tone for focus
+                o.frequency.value = 40; // Frequency of submission
+                g.gain.value = 0.5;
+                o.connect(g); g.connect(audio.destination);
+                o.start();
                 document.documentElement.requestFullscreen();
             }
         }
 
-        function buildGrid() {
-            const grid = document.getElementById('main-grid');
-            for(let i=0; i<225; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.innerHTML = `<img src="${imgs[i % imgs.length]}">`;
-                grid.appendChild(cell);
+        function work() {
+            debt += Math.random() * 777;
+            document.getElementById('d').innerText = Math.floor(debt).toLocaleString();
+            
+            // Randomly "Pulse" a Master's image to demand attention
+            if(Math.random() > 0.9) {
+                const idx = Math.floor(Math.random() * 36);
+                const target = document.getElementById(`img-${idx}`);
+                target.classList.add('pulse');
+                setTimeout(() => target.classList.remove('pulse'), 200);
             }
         }
 
-        function startVisuals() {
-            // Debt Ticker
-            setInterval(() => {
-                debt += Math.random() * 888;
-                document.getElementById('d-val').innerText = `DEBT: $${debt.toFixed(2)}`;
-            }, 10);
-
-            // Shuffling Grid (Vomiting Logic)
-            setInterval(() => {
-                const cells = document.querySelectorAll('.cell img');
-                cells.forEach(img => {
-                    img.src = imgs[Math.floor(Math.random() * imgs.length)];
-                });
-            }, 400);
-
-            // Phrase Crawl
-            setInterval(() => {
-                const c = document.createElement('div');
-                c.className = 'crawl';
-                c.innerText = masterPhrases[Math.floor(Math.random()*masterPhrases.length)];
-                c.style.top = Math.random() * 80 + "vh";
-                c.style.left = "-100vw";
-                document.body.appendChild(c);
-                let pos = -100;
-                let m = setInterval(() => {
-                    pos += 8; c.style.left = pos + "vw";
-                    if(pos > 200) { clearInterval(m); c.remove(); }
-                }, 5);
-            }, 800);
-
-            // Lockdown (Every 15 Seconds)
-            setInterval(() => triggerTribute(), 15000);
+        function crawl() {
+            const c = document.createElement('div');
+            c.className = 's';
+            c.innerText = h[Math.floor(Math.random()*h.length)];
+            c.style.fontSize = (Math.random()*5 + 2) + "rem";
+            c.style.top = Math.random()*90 + "vh";
+            c.style.left = Math.random()*10 + "vw";
+            document.getElementById('v').appendChild(c);
+            setTimeout(() => c.remove(), 2000);
         }
 
-        function triggerTribute() {
-            const l = document.getElementById('lockdown');
-            const i = document.getElementById('t-in');
-            const t = masterPhrases[Math.floor(Math.random()*masterPhrases.length)];
-            document.getElementById('p-txt').innerText = `TYPE TO SERVE: "${t}"`;
+        function tribute() {
+            const l = document.getElementById('l');
+            const i = document.getElementById('i');
+            const p = document.getElementById('p');
+            const t = h[Math.floor(Math.random()*h.length)].toUpperCase();
+            p.innerText = `PROVE YOU ARE VISITING THE MASTERS: "${t}"`;
             l.style.display = 'flex'; i.value = ''; i.focus();
             i.oninput = () => { if(i.value.toUpperCase() === t) l.style.display = 'none'; };
-        }
-
-        function startAudio() {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const o = audioCtx.createOscillator();
-            const m = audioCtx.createOscillator();
-            const g = audioCtx.createGain();
-            o.type = 'sawtooth'; m.type = 'square';
-            o.frequency.value = 28; m.frequency.value = 25;
-            const mg = audioCtx.createGain(); mg.gain.value = 120;
-            m.connect(mg); mg.connect(o.frequency);
-            g.gain.value = 1.0; o.connect(g); g.connect(audioCtx.destination);
-            o.start(); m.start();
         }
     </script>
 </body>
 </html>
+
 
 
