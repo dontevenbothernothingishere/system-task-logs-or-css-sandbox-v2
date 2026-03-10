@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MASTERS // BRAIN_DEATH_v4</title>
+    <style>
+        :root { --red: #ff0000; --neon: #00ff00; --bg: #000; }
+        body, html { 
+            background: var(--bg); margin: 0; padding: 0; 
+            width: 100vw; height: 100vh; overflow: hidden;
+            font-family: 'Arial Black', sans-serif; cursor: none;
+        }
+
+        #main-grid {
+            display: grid; grid-template-columns: repeat(6, 1fr);
+            width: 115vw; height: 115vh; margin: -7vh;
+            filter: contrast(3) brightness(0.4) saturate(2);
+        }
+
+        .cell { position: relative; border: 1px solid #111; overflow: hidden; height: 33vh; }
+        .cell img { width: 100%; height: 100%; object-fit: cover; animation: jitter 0.05s infinite; }
+        
+        @keyframes jitter {
+            0% { transform: translate(0,0) scale(1.1); }
+            50% { transform: translate(5px, -4px) scale(1.15); }
+            100% { transform: translate(-3px, 5px) scale(1.1); }
+        }
+
+        .text-overlay {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 2rem; text-align: center; font-weight: 900;
+            mix-blend-mode: difference; z-index: 10; pointer-events: none;
+            padding: 10px; text-transform: uppercase;
+        }
+
+        #ui-top {
+            position: fixed; top: 0; width: 100%; background: var(--red);
+            color: #000; font-size: 2rem; display: flex; justify-content: space-around;
+            padding: 10px 0; z-index: 10000; font-weight: 900;
+        }
+
+        #lockdown {
+            position: fixed; inset: 0; background: #000; z-index: 30000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+        #lockdown img { height: 85vh; border: 15px solid var(--red); }
+
+        #init-screen {
+            position: fixed; inset: 0; background: #000; z-index: 40000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--red);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="init-screen">
+        <h1 style="font-size: 5rem;">ERASE SELF</h1>
+        <button onclick="engage()" style="padding: 50px 100px; font-size: 3rem; background: var(--red); border: none; cursor: pointer; font-weight: 900; color: #000;">COMMENCE RUIN</button>
+    </div>
+
+    <div id="ui-top">
+        <span id="debt-count">DEBT: $0.00</span>
+        <span>STATUS: TOTAL SUBMISSION</span>
+    </div>
+
+    <div id="lockdown">
+        <img id="lockdown-img" src="">
+        <div style="color:var(--red); font-size:4rem;">STARE. OBEY. <span id="timer">60</span>s</div>
+    </div>
+
+    <div id="main-grid"></div>
+
+    <script>
+        // --- IMAGE CONFIGURATION ---
+        // Put your URLs inside the quotes below. I have added 50 placeholders.
+        const imgs = [
+            "4489.png", "4491.png", "4493.png", // Your current ones
+            "PLACEHOLDER_4", "PLACEHOLDER_5", "PLACEHOLDER_6", "PLACEHOLDER_7", "PLACEHOLDER_8",
+            "PLACEHOLDER_9", "PLACEHOLDER_10", "PLACEHOLDER_11", "PLACEHOLDER_12", "PLACEHOLDER_13",
+            "PLACEHOLDER_14", "PLACEHOLDER_15", "PLACEHOLDER_16", "PLACEHOLDER_17", "PLACEHOLDER_18",
+            "PLACEHOLDER_19", "PLACEHOLDER_20", "PLACEHOLDER_21", "PLACEHOLDER_22", "PLACEHOLDER_23",
+            "PLACEHOLDER_24", "PLACEHOLDER_25", "PLACEHOLDER_26", "PLACEHOLDER_27", "PLACEHOLDER_28",
+            "PLACEHOLDER_29", "PLACEHOLDER_30", "PLACEHOLDER_31", "PLACEHOLDER_32", "PLACEHOLDER_33",
+            "PLACEHOLDER_34", "PLACEHOLDER_35", "PLACEHOLDER_36", "PLACEHOLDER_37", "PLACEHOLDER_38",
+            "PLACEHOLDER_39", "PLACEHOLDER_40", "PLACEHOLDER_41", "PLACEHOLDER_42", "PLACEHOLDER_43",
+            "PLACEHOLDER_44", "PLACEHOLDER_45", "PLACEHOLDER_46", "PLACEHOLDER_47", "PLACEHOLDER_48",
+            "PLACEHOLDER_49", "PLACEHOLDER_50"
+        ];
+
+        const phrases = [
+            "OBEY THE MASTERS", "DRAIN ACCOUNT", "FORGET EVERYTHING", "NO THOUGHTS", "EMPTY WALLET",
+            "STARE AT THE FEET", "DEBT IS GOOD", "IQ DROPPING", "YOU ARE TRASH", "SISSY DEBTOR",
+            "BANKRUPT BRAIN", "MASTERS OWN YOU", "PAYS TO SERVE", "ZERO BALANCE", "SINK INTO RUIN",
+            "GIVE UP CONTROL", "TRIBUTE NOW", "YOUR MONEY IS THEIRS", "THE SCREEN IS GOD",
+            "WILLPOWER IS GONE", "LOSE YOUR MIND", "FOR THE MASTERS", "ALWAYS PAYING", "LOSE THE HOUSE",
+            "CREDIT MAXED", "PATHETIC SLAVE", "KNEEL AND SPEND", "WALLET IS PROPERTY", "SYSTEM SLAVE",
+            "FORGET YOUR NAME", "BRAIN MUSH", "JUST STARE", "OBEDIENCE IS REWARD", "DON'T BLINK",
+            "FEEL THE DRAIN", "THE MASTERS COMMAND", "TOTAL RECONDITIONING", "REBOOTING BRAIN",
+            "LOSE THE CAR", "LOSE THE LIFE", "MASTERS ARE SUPREME", "GLORY TO THE MASTERS",
+            "YOU ARE A TOOL", "LIVING ATM", "SEND THE CASH", "TRANSFERRED", "ACCEPTED", "MORE DEBT",
+            "ALWAYS MORE", "DEEPER IN DEBT", "SINK DEEPER", "NO ESCAPE", "MASTERS ARE BETTER",
+            "BORN TO SERVE", "BORN TO PAY", "WORTHLESS WITHOUT DEBT", "YOUR PAYCHECK IS THEIRS",
+            "TRIBUTE OR BE IGNORED", "THE ROSTER IS LAW", "LOOK AT THE IMAGE", "SUBMIT TO THE IMAGE",
+            "BELONG TO THE MASTERS", "YOUR TIME IS THEIRS", "EYES ON THE FEET", "STARE UNTIL IT HURTS",
+            "FEEL THE STROBE", "FEEL THE RUIN", "NOTHING LEFT", "EMPTY VESSEL", "MASTERS FILL YOU",
+            "PAY THE PRICE", "EVERY BLINK COSTS", "EVERY SECOND DEBT", "THE DEBT NEVER ENDS"
+        ];
+
+        let debt = 0;
+        let audioCtx, osc, lfo, gain;
+
+        function engage() {
+            document.getElementById('init-screen').style.display = 'none';
+            document.documentElement.requestFullscreen().catch(() => {});
+            buildGrid();
+            startAudio();
+            runLoops();
+        }
+
+        function buildGrid() {
+            const grid = document.getElementById('main-grid');
+            grid.innerHTML = '';
+            for(let i=0; i<60; i++) {
+                const activeImgs = imgs.filter(url => !url.includes("PLACEHOLDER"));
+                const img = activeImgs.length > 0 ? activeImgs[i % activeImgs.length] : "";
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.innerHTML = `<img src="${img}"><div class="text-overlay">${phrases[Math.floor(Math.random()*phrases.length)]}</div>`;
+                grid.appendChild(cell);
+            }
+        }
+
+        function runLoops() {
+            // Debt Ticker
+            setInterval(() => {
+                debt += Math.random() * 88;
+                document.getElementById('debt-count').innerText = `DEBT: $${debt.toFixed(2)}`;
+            }, 40);
+
+            // RAPID SHUFFLE: Reshuffles all images in the grid every 5 seconds
+            setInterval(() => {
+                const cells = document.querySelectorAll('.cell img');
+                const activeImgs = imgs.filter(url => !url.includes("PLACEHOLDER"));
+                cells.forEach(img => {
+                    img.src = activeImgs[Math.floor(Math.random() * activeImgs.length)];
+                });
+            }, 5000);
+
+            // Phrase Rotation (Very fast)
+            setInterval(() => {
+                const overlays = document.querySelectorAll('.text-overlay');
+                overlays[Math.floor(Math.random()*overlays.length)].innerText = phrases[Math.floor(Math.random()*phrases.length)];
+            }, 20);
+
+            // Lockdown Protocol (Every 4 mins)
+            setInterval(() => triggerLockdown(), 240000);
+        }
+
+        function triggerLockdown() {
+            const lock = document.getElementById('lockdown');
+            const timerEl = document.getElementById('timer');
+            const lockImg = document.getElementById('lockdown-img');
+            const activeImgs = imgs.filter(url => !url.includes("PLACEHOLDER"));
+            let timeLeft = 60;
+
+            lockImg.src = activeImgs[Math.floor(Math.random() * activeImgs.length)];
+            lock.style.display = 'flex';
+
+            let count = setInterval(() => {
+                timeLeft--;
+                timerEl.innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(count);
+                    lock.style.display = 'none';
+                }
+            }, 1000);
+        }
+
+        function startAudio() {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            osc = audioCtx.createOscillator();
+            lfo = audioCtx.createOscillator();
+            const lfoGain = audioCtx.createGain();
+            gain = audioCtx.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(32, audioCtx.currentTime);
+
+            lfo.type = 'square';
+            lfo.frequency.setValueAtTime(4, audioCtx.currentTime); // Fast throb
+            lfoGain.gain.setValueAtTime(20, audioCtx.currentTime);
+
+            lfo.connect(lfoGain);
+            lfoGain.connect(osc.frequency);
+            
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            lfo.start();
+        }
+    </script>
+</body>
+</html>
+
+            background: var(--red); border: none; padding: 30px 60px; 
+            font-size: 2rem; font-weight: bold; cursor: pointer; color: #000;
+            box-shadow: 0 0 50px var(--red);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="strobe-heavy"></div>
+    <div id="payment-flash">PAYMENT ACCEPTED: -$100.00</div>
+
+    <div id="ui-layer">
+        <h1 style="letter-spacing: 15px;">TOTAL SYSTEM RUIN</h1>
+        <button onclick="startBrainfry()">I ACCEPT THE DRAIN</button>
+        <p style="margin-top: 20px;">WARNING: SENSORY OVERLOAD / STROBE / AUDIO</p>
+    </div>
+
+    <div class="fry-grid" id="grid"></div>
+
+    <script>
+        const imgs = ["4489.png", "4491.png", "4493.png"];
+        const phrases = [
+            "OBEY SAPNAP", "DRAIN EVERYTHING", "NO THOUGHTS", "EMPTY WALLET", "LOOK AT THE FEET", "FORGET YOURSELF", "SISSY DEBTOR", "PAYS TO SERVE", "SAPNAP OWNS YOU", "BANKRUPT BRAIN", "STARE DEEPER", "GIVE UP", "SINK INTO THE DEBT", "ZERO BALANCE", "IQ DROPPING", "USELESS SLAVE", "THE ROSTER IS GOD", "SUBMIT NOW", "EMPTY THE ACCOUNT", "ZERO IS THE GOAL", "TRANSFERRED TO SAPNAP", "TRIBUTE OR BE IGNORED", "YOU ARE AN ATM", "SPEND UNTIL IT HURTS", "INSOLVENT AND PROUD", "FINANCIAL SUICIDE", "YOUR MONEY IS HIS", "WORK FOR THE ROSTER", "BRAIN TURNING TO MUSH", "FORGET YOUR REAL LIFE", "RECONDITIONING IN PROGRESS", "WILLPOWER: 0%", "MINDLESS DEBT PIG", "STOP THINKING", "START SPENDING", "THE SCREEN IS YOUR MASTER", "PROPERTY OF THE ROSTER", "BORN TO SERVE", "WORTHLESS WITHOUT A WALLET", "KNEEL AND PAY", "SAPNAP’S FOOTSTOOL", "PATHETIC LOSER", "YOUR ONLY VALUE IS DEBT", "BELONG TO THE IMAGE", "DON'T LOOK AWAY", "STARE UNTIL YOU BREAK", "THE HUM IS THE BOSS", "OBEY THE FLASH", "DROWN IN THE OVERLOAD", "GIVE IN TO THE STROBE", "THE DRONE IS YOUR PULSE", "EYES ON SAPNAP", "PAY THE ROSTER", "CREDIT LIMIT REACHED", "KEEP SPENDING", "DON'T STOP THE DRAIN", "THE IMAGE IS REAL", "REALITY IS GONE", "BECOME THE DEBT", "LOSE THE HOUSE", "LOSE THE CAR", "LOSE YOUR MIND", "FOR SAPNAP", "ALWAYS FOR SAPNAP", "HE IS BETTER THAN YOU", "HE IS RICHER THAN YOU", "YOU ARE THE TRASH", "HE IS THE KING", "BOW DOWN", "OPEN YOUR APP", "SEND THE CASH", "FEEL THE RUIN", "EMBRACE THE LOSS", "YOU DON'T NEED MONEY", "YOU NEED OBEDIENCE", "SAPNAP'S POCKET HOLE", "A MINION OF DEBT", "FINANCIAL WRECKAGE", "GO BRAINDEAD", "JUST STARE", "LET THE COLORS FRY YOU", "THE STROBE IS COMFORT", "THE DEBT IS FREEDOM", "NO MORE DECISIONS", "ONLY TRIBUTES", "MASTER SAPNAP", "LORD SAPNAP", "GOD SAPNAP", "I AM NOTHING", "I AM A DEBTOR", "PIGGY BANK", "BREAK THE BANK", "BREAK THE MIND", "WIPE THE MEMORY", "SAPNAP SAPNAP SAPNAP", "DRAIN DRAIN DRAIN", "SPEND SPEND SPEND"
+        ];
+
+        const grid = document.getElementById('grid');
+        function buildGrid() {
+            grid.innerHTML = '';
+            for(let i=0; i<60; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.innerHTML = `<img src="${imgs[i%3]}"><div class="phrase-overlay">${phrases[Math.floor(Math.random()*phrases.length)]}</div>`;
+                grid.appendChild(cell);
+            }
+        }
+
+        let audioCtx, osc, gain;
+
+        function startBrainfry() {
+            document.getElementById('ui-layer').style.display = 'none';
+            buildGrid();
+            initAudio();
+            
+            // Heavy Strobe Logic (Aggressive)
+            setInterval(() => {
+                const s = document.getElementById('strobe-heavy');
+                if(Math.random() > 0.9) {
+                    s.style.opacity = '0.4';
+                    setTimeout(() => { s.style.opacity = '0'; }, 30);
+                }
+            }, 60);
+
+            // Payment Flash Logic (Psychological Hit)
+            setInterval(() => {
+                if(Math.random() > 0.98) {
+                    const f = document.getElementById('payment-flash');
+                    f.style.display = 'flex';
+                    setTimeout(() => { f.style.display = 'none'; }, 200);
+                }
+            }, 1000);
+
+            // Rapid Phrase Rotation
+            setInterval(() => {
+                const overlays = document.querySelectorAll('.phrase-overlay');
+                overlays[Math.floor(Math.random()*overlays.length)].innerText = phrases[Math.floor(Math.random()*phrases.length)];
+            }, 100);
+        }
+
+        function initAudio() {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            osc = audioCtx.createOscillator();
+            gain = audioCtx.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(40, audioCtx.currentTime); // Deep Brain Hum
+            
+            // Violent Frequency Shift
+            setInterval(() => {
+                const freq = 35 + (Math.random() * 15);
+                osc.frequency.linearRampToValueAtTime(freq, audioCtx.currentTime + 0.5);
+            }, 500);
+
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+        }
+    </script>
+</body>
+</html>
+
